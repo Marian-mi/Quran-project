@@ -1,0 +1,18 @@
+$primary-color1: #ede6b9;
+$primary-color2: #316879;
+$border-radius-top: 0 0 100px 100px;
+$border-radius-bottom: 100px 100px 0 0;
+$font-farsi: Arial, Helvetica, sans-serif;
+@mixin centeredboth {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+@mixin centeredleft {
+  left: 50%;
+  transform: translateX(-50%);
+}
+@mixin centeredtop {
+  top: 50%;
+  transform: translateY(-50%);
+}

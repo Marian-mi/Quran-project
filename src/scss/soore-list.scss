@@ -1,0 +1,77 @@
+@import "common";
+
+.soore-list-main {
+    height: 800px;
+}
+
+.soore-list-top {
+    position: relative;
+    bottom: 40px;
+    direction: rtl;
+    color: $primary-color2;
+    font-weight: 500;
+    font-size: 24px;
+    padding: 0 15px;
+    font-family: $font-farsi;
+}
+
+.soore-list-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.soore {
+    width: 350px;
+    background-image: linear-gradient(45deg, #729e8dc7, rgba($color: $primary-color2, $alpha: 0.4));
+    box-shadow: 0 0 5px 0 $primary-color2;
+    height: 120px;
+    position: relative;
+    border: 1px ridge rgba(0, 158, 137, 0.87);;
+    margin: 10px;
+}
+
+.soore-name-arabic {
+    position: absolute;
+    right: 40px;
+    @include centeredtop();
+    font-size: 30px;
+    color: rgba(255, 255, 255, 0.829);
+    font-family: $font-farsi;
+    word-spacing: -10px;
+}
+
+.soore-name-english {
+    position: relative;
+    @include centeredtop();
+    padding: 0 10px;
+    p {
+        color: rgb(255, 255, 255);
+        font-size: 26px;
+        position: relative;
+        font-weight: 300;
+        bottom: 5px;
+    }
+}
+
+.soore-number-counter {
+    position: absolute;
+    right: 0;
+    @include centeredtop();
+    width: 140px;
+    height: 40px;
+    text-align: right;
+    background-color: rgba(0, 158, 137, 0.87);
+    z-index: -1;
+    p {
+        position: relative;
+        @include centeredtop();
+        right: 5px;
+        color: white;
+        font-size: 24px;
+    }
+}
+
+.soore-name-fin {
+    top: 15px;
+}
