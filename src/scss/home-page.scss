@@ -59,11 +59,13 @@ html, body, #root {
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   h1, p {
     position: relative;
+    height: 20%;
     top: 20%;
     padding: 0 20px;
     color: rgb(54, 54, 54);
   }
   p {
+    height: 60%;
     margin-top: 20px;
     font-size: 18px;
     font-weight: 700;

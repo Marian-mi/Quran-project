@@ -7,6 +7,8 @@ import { faChevronCircleLeft, faCog, faCopy, faPlayCircle, faShare } from '@fort
 import logo from '../assets/images/bismillah.png';
 import tarjomeAnsarian from  '../assets/ts/tarjomeh/fa.ansarian';
 import { Link } from 'react-router-dom';
+import Audioplayer from '../Components/audioPlayer';
+import ErrorBoundary from '../Components/error-boundary';
 
 declare module 'react' {
     interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
@@ -45,36 +47,7 @@ export default class ayatePage extends React.Component<props> {
                 item.setAttribute('ayeno', (index+=1).toString())               
             }
         })
-        const audio = document.querySelector('#ayeAudio')! as HTMLAudioElement;
-        const audio2 = document.querySelector('#ayeAudio2')! as HTMLAudioElement;
-        playButtons.forEach(item => {
-            item.addEventListener('click', e => {
-                const target = e.target! as HTMLDivElement;
-                let aye = target.getAttribute('ayeno')!.padStart(3, '0');
-                console.log(aye);
-                let soore = (sorreno.toString()).padStart(3, '0');
-                console.log(soore);
-                audio.setAttribute('src', `https://audio.qurancdn.com/Alafasy/mp3/${soore}${aye}.mp3`);
-                audio.play();
-                const parentDiv = target.parentElement;
-                const mainDiv = parentDiv!.parentElement!;
-                audio.onabort = audioAboutHandler(mainDiv);
-                mainDiv!.style.color = 'rgba(0, 126, 109, 0.76)';
-                audio.onended = () => {
-                    mainDiv!.style.color = 'rgba(34, 34, 34, 0.733)';
-                    audio2.setAttribute('src', `https://audio.qurancdn.com/Alafasy/mp3/${soore}${aye}.mp3`);
-                };
-            })
-        })
-
-        const audioAboutHandler = (parent: HTMLElement): any => {
-            const textContainers = document.querySelectorAll<HTMLDivElement>('.aye-text');
-            textContainers.forEach((item) => {
-                if (item !== parent) {
-                    item.style.color ='rgba(34, 34, 34, 0.733)';
-                }
-            })
-        }
+        
 
         const copyButtons = document.querySelectorAll('.copyButton')!;
         copyButtons.forEach(item => {
@@ -175,8 +148,9 @@ export default class ayatePage extends React.Component<props> {
                     
                 </div>
                 <div className="aye-page-footer"></div>
-                <audio id="ayeAudio" src=""></audio>
-                <audio id="ayeAudio2" src=""></audio>
+                <ErrorBoundary>
+                    <Audioplayer soreNumber={this.props.location.state.sooreNumber} />
+                </ErrorBoundary>
             </div>
             
         )
