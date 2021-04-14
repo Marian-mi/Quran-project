@@ -83,11 +83,17 @@
         position: absolute;
         @include centeredboth;
     }
-    svg {
-        position: absolute;
-        right: 10px;
-        @include centeredtop();
-    }
+    
+}
+.settingIcon {
+    position: absolute;
+    right: 10px;
+    @include centeredtop();
+}
+.backtohomeIcon {
+    @extend .settingIcon;
+    left: 10px;
+    color: rgba(255, 255, 255, 0.623);
 }
 path {
     pointer-events: none;

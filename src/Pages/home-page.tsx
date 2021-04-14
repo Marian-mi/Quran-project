@@ -53,7 +53,6 @@ class Homepage extends React.Component {
                     </div>
                     
                 </div>
-                <div>learn react</div>
             </div>
         )
     }

@@ -3,9 +3,10 @@ import {Qurantext} from '../assets/ts/quran-simple-plain';
 import '../scss/ayePage.scss';
 import Buttons from  '../Components/buttons-inflex';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCog, faCopy, faPlayCircle, faShare } from '@fortawesome/free-solid-svg-icons';
+import { faChevronCircleLeft, faCog, faCopy, faPlayCircle, faShare } from '@fortawesome/free-solid-svg-icons';
 import logo from '../assets/images/bismillah.png';
 import tarjomeAnsarian from  '../assets/ts/tarjomeh/fa.ansarian';
+import { Link } from 'react-router-dom';
 
 declare module 'react' {
     interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
@@ -156,10 +157,13 @@ export default class ayatePage extends React.Component<props> {
                 
                 <div className="aye-container">
                 <div className="aye-page-header">
+                    <Link to="/" >
+                        <FontAwesomeIcon icon={faChevronCircleLeft} className="backtohomeIcon" />
+                    </Link>
                     <div className="copied">
                         <p>Copied to Clipboard!</p>
                     </div>
-                    <FontAwesomeIcon icon={faCog} onClick={openSetting}/>
+                    <FontAwesomeIcon icon={faCog} onClick={openSetting} className="settingIcon"/>
                     <p>
                     {this.props.location.state.ayeName}
                     </p>
