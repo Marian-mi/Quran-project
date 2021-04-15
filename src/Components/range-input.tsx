@@ -8,11 +8,19 @@ type props = {
     localstogrageKey: string;
     changesOutputid: string;
 }
+type state  = {
+    fontSize: string;
+}
 
 
-export default class Rangeinput extends React.Component<props> {
+export default class Rangeinput extends React.Component<props, state> {
 
-    
+    constructor(props: props) {
+        super(props)
+        this.state = {
+            fontSize: "35"
+        }
+    }
 
     render() {
         const submitHandler = (e:FormEvent , id:string, localStoragekey: string) => {
@@ -20,7 +28,7 @@ export default class Rangeinput extends React.Component<props> {
             const FontInput = document.querySelector(`#${id}`)! as HTMLInputElement;
             let fontSize = FontInput.value.toString();
             localStorage.setItem(localStoragekey, `${fontSize}px`);
-            window.location.reload();
+            // window.location.reload();
         }
 
         const changeHandler = (id: string, displayid: string) => {

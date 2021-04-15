@@ -30,6 +30,8 @@ type props = {
 type state = {
     ayeCounter: number;
     ayat: any[];
+    ayeSize: string;
+    tarjoemSize: string;
 }
 
 export default class ayatePage extends React.Component<props, state> {
@@ -38,7 +40,9 @@ export default class ayatePage extends React.Component<props, state> {
         super(props)
         this.state = {
             ayeCounter: 0,
-            ayat: []
+            ayat: [],
+            ayeSize: '35px',
+            tarjoemSize: '26px'
         }
     }
 
@@ -107,7 +111,32 @@ export default class ayatePage extends React.Component<props, state> {
         this.setState({ayeCounter: newCount, ayat: [...this.state.ayat,...arr]})
     }
 
+    copyFunction = (e: Event) => {
+        console.log('yes this function ever gets called')
+        const copyAlert = document.querySelector('.copied')! as HTMLDivElement;
+        const target = e.target! as HTMLDivElement
+        const parent = target.parentElement!;
+        const pparent = parent.parentElement!;
+        const theTarget = pparent.children[0]!;
+        var r = document.createRange();
+        r.selectNode(theTarget);
+        window.getSelection()?.removeAllRanges();
+        window.getSelection()?.addRange(r);
+        document.execCommand('copy');
+        window.getSelection()?.removeAllRanges();
+        copyAlert.style.transform = 'translateY(-20%)'
+        setTimeout(() => {
+            copyAlert.style.transform = 'translateY(-120%)'
+        }, 2000);
+    }
+
     componentDidMount() {
+        window.addEventListener('storage', () => {
+            let ayeS = localStorage.getItem('ayeFont') as string;
+            this.setState({ayeSize: ayeS});
+            let tarjoemS = localStorage.getItem('tarjomeFont') as string;
+            this.setState({tarjoemSize: tarjoemS})  
+        })
         const ayeStyle = {
             fontSize: localStorage.getItem('ayeFont') as string
         }
@@ -126,41 +155,24 @@ export default class ayatePage extends React.Component<props, state> {
                 item.setAttribute('ayeno', (index+=1).toString())               
             }
         })
-        
-
         const copyButtons = document.querySelectorAll('.copyButton')!;
+        console.log(copyButtons);
         copyButtons.forEach(item => {
             item.addEventListener('click', e => {
-                const copyAlert = document.querySelector('.copied')! as HTMLDivElement;
-                const target = e.target! as HTMLDivElement
-                const parent = target.parentElement!;
-                const pparent = parent.parentElement!;
-                const theTarget = pparent.children[0]!;
-                var r = document.createRange();
-                r.selectNode(theTarget);
-                window.getSelection()?.removeAllRanges();
-                window.getSelection()?.addRange(r);
-                document.execCommand('copy');
-                window.getSelection()?.removeAllRanges();
-                copyAlert.style.transform = 'translateY(-20%)'
-                setTimeout(() => {
-                    copyAlert.style.transform = 'translateY(-120%)'
-                }, 2000);
+                this.copyFunction(e)
             })
         })
-
         window.scrollTo(0, 0);
-
-        
     }
 
     componentDidUpdate() {
-        const ayeStyle = {
-            fontSize: localStorage.getItem('ayeFont') as string
-        }
-        const tarjomeStyle = {
-            fontSize: localStorage.getItem('tarjomeFont') as string
-        }
+        const copyButtons = document.querySelectorAll('.copyButton')!;
+        copyButtons.forEach(item => {
+            item.addEventListener('click', this.copyFunction)
+        })
+        const ayeStyle = {fontSize: this.state.ayeSize};
+        const tarjomeStyle = {fontSize: this.state.tarjoemSize};
+        
 
         let lastNode = document.querySelector('.aye-page-footer')!;
         let observer = new IntersectionObserver(entry => {

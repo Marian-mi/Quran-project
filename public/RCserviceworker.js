@@ -34,8 +34,17 @@ self.addEventListener('activate', e => {
 })
 
 self.addEventListener('fetch', e => {
-    console.log("fetching")
-    console.log(e.request.url)
+    
+    if(e.request.url === 'https://quranproject12.netlify.app') {
+        e.respondWith(fetch(e.request).then(
+            res => res
+        ).catch(async error => {
+            console.log(error, 'serving from cache')
+            let cache = await caches.open(cacheName);
+            let offRespond = await cache.match('./index.html');
+            return offRespond;
+        }))
+    }
     if (e.request.mode === 'navigate') {
         console.log(e.request.url)
         e.respondWith(fetch(e.request).then(

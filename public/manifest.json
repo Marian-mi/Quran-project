@@ -1,7 +1,7 @@
 {
-    "short_name": "Weather",
-    "name": "Weather: Do I need an umbrella?",
-    "start_url": "/build",
+    "short_name": "Quran",
+    "name": "The holy quran",
+    "start_url": ".",
     "icons": [
       {
         "src": "./logo1.png",

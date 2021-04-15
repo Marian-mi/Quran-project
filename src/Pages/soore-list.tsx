@@ -29,11 +29,11 @@ export default class SooreListPage extends React.Component<props, state> {
         if(item[i][4] !== undefined && item[i] !== undefined){
             return <Link style={Linkstyle} key={item[i][0]}
             to={{
-                pathname: `Aye/${item[i][5]}`,
+                pathname: `/Aye`,
                 state: {
                     start: item[i][0],
                     end: item[i+1][0],
-                    sooreNumber: (i),
+                    sooreNumber: (count + i),
                     ayeName: item[i][4],               
                 }
             }}>
@@ -52,8 +52,9 @@ export default class SooreListPage extends React.Component<props, state> {
     observerCallback = () => {
         let index = this.state.elementCounter;  
         let arr = []
-        let item = Sura.Sura.slice((index), index + 12);
+        let item = Sura.Sura.slice((index), index + 14);
         for (let i = 0; i <  10; i++) {
+            if( index + i > (Sura.Sura.length - 1)) { return }
             arr.push(this.itemMaker(i, item, {textDecoration: 'none'}, index))
             if (i === 9) {this.stateUpdater(arr, index)}
         }
