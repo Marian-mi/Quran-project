@@ -83,3 +83,10 @@
         display: inline;       
     }
 }
+
+@media only screen and (min-width: 900px) {
+    .setting-body1 {
+        margin: auto;
+        width: 70%;
+    }
+}

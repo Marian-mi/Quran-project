@@ -7,7 +7,8 @@
     background-color: #f6f6f6;
     img {
         width: 100%;
-        margin: 30px 0;
+        margin: 30px auto;
+        display: block;
     }
     .aye-text {
         direction: rtl;
@@ -16,7 +17,6 @@
         box-shadow: 0 0 5px 0 $primary-color2;
         height: inherit; 
         position: relative;
-        padding: 0;
         border: 1px ridge rgba(0, 158, 137, 0.87);
         margin: 15px auto ;
         font-size: 32px;
@@ -65,7 +65,9 @@
     font-weight: 500;
 }
 .aye-page-footer {
-    height: 200px;
+    height: 100px;
+    text-align: center;
+    font-size: 24px;
 }
 .aye-page-header {
     height: 60px;
@@ -123,5 +125,37 @@ path {
         right: 50%;
         top: 50%;
         transform: translate(50%, -50%);
+    }
+}
+.scrollTop {
+    position: fixed;
+    height: 50px;
+    width: 50px;
+    bottom: 20px;
+    right: 20px;
+    transition: 0.5s;
+    svg {
+        font-size: 50px;
+        color: rgba(119, 71, 49, 0.856);
+    }
+}
+
+@media (max-height: 600px) {
+    .ayeButtons {
+      p {
+          display: none;
+      }   
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    .aye-main {
+        width: 70%;
+        img {
+            width: 50%;
+        }
+    }
+    .aye-text {
+        padding: 0 100px;
     }
 }

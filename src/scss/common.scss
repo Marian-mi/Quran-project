@@ -16,3 +16,11 @@ $font-farsi: Arial, Helvetica, sans-serif;
   top: 50%;
   transform: translateY(-50%);
 }
+
+svg:hover {
+  cursor: pointer;
+}
+
+input[type = submit] {
+  cursor: pointer;
+}

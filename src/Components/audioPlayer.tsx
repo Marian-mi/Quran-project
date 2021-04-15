@@ -1,11 +1,12 @@
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faPauseCircle, faPlayCircle, faTimes, faVolumeMute, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
+import {  faPlayCircle, faTimes, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import '../scss/audioPlayer.scss';
 
 type props = {
     soreNumber: number;
+    ayatCount: number;
 }
 type state = {
     playsate: IconProp;
@@ -22,7 +23,7 @@ export default class Audioplayer extends React.Component<props , state> {
         }
     }
 
-    componentDidMount() {
+    componentDidUpdate() {
         const playIconContainer = document.getElementById('play-icon')! as HTMLDivElement;
         const audioPlayerContainer = document.querySelector('#audio-player-container')! as HTMLDivElement;
         const seekSlider = document.querySelector('#seek-slider')! as HTMLInputElement;
@@ -31,9 +32,16 @@ export default class Audioplayer extends React.Component<props , state> {
         const textContainers = document.querySelectorAll<HTMLDivElement>('.aye-text');
         const ayeContainer = document.querySelector('.aye-container')! as HTMLDivElement;
         const ayeContainerChildren = ayeContainer.children;
+        const audio = document.querySelector('#audioPlayer')! as HTMLAudioElement;
+        const audio1 = document.querySelector('#audioPlayer1')! as HTMLAudioElement;
+        const scrollTop = document.querySelector('.scrollTop')! as HTMLDivElement;
+        let currentAudio = audio;
+        const durationContainer = document.getElementById('duration')!;
+        const currentTimeContainer = document.getElementById('current-time')!;
+        let raf: any = null;
         let playState = 'play';
         let muteState = 'unmute';
-
+ 
         const playButtons = document.querySelectorAll('.playButton')!;
         let sorreno = this.props.soreNumber;
         playButtons.forEach(item => {
@@ -45,9 +53,9 @@ export default class Audioplayer extends React.Component<props , state> {
                 audio.onabort = audioAboutHandler(mainDiv);
                 const mainDivIndex = Array.prototype.indexOf.call(ayeContainerChildren, mainDiv);
                 audioPlayerContainer.style.display= 'block';
-                audioPlayerContainer.style.opacity= '1';              
+                audioPlayerContainer.style.opacity= '1';
+                scrollTop.style.bottom = "110px";              
                 playState = 'pause';
-                this.setState({playsate: faPauseCircle})
                 autoplayHandler(aye, sorreno, mainDivIndex);           
             })
         })
@@ -55,10 +63,21 @@ export default class Audioplayer extends React.Component<props , state> {
         
 
         const autoplayHandler = (currentAye: number, currentSoore: number, index:number) => {
+            if(currentAye > this.props.ayatCount) {
+                return
+            }
             let aye = currentAye.toString().padStart(3, '0');
             let soore = currentSoore.toString().padStart(3, '0');
             currentAudio = audio;
             currentAudio.setAttribute('src', `https://audio.qurancdn.com/Alafasy/mp3/${soore}${aye}.mp3`);
+            if (currentAudio.readyState > 0) {
+                displayDuration();
+                setSliderMax();
+            } else {
+                currentAudio.addEventListener('loadedmetadata', () => {
+                displayDuration();
+                setSliderMax();
+            });}
             let currentParent = ayeContainerChildren[index]! as HTMLDivElement;
             currentParent.style.color = 'rgba(0, 126, 109, 0.76)';
             autoScroller(currentParent); 
@@ -79,10 +98,21 @@ export default class Audioplayer extends React.Component<props , state> {
 
 
         const autoplayHandler1 = (currentAye: number, currentSoore: number, index: number) => {
+            if(currentAye > this.props.ayatCount) {
+                return
+            }
             let aye = currentAye.toString().padStart(3, '0');
             let soore = currentSoore.toString().padStart(3, '0');
             currentAudio = audio1;
             currentAudio.setAttribute('src', `https://audio.qurancdn.com/Alafasy/mp3/${soore}${aye}.mp3`);
+            if (currentAudio!.readyState > 0) {
+                displayDuration();
+                setSliderMax();
+            } else {
+                currentAudio!.addEventListener('loadedmetadata', () => {
+                displayDuration();
+                setSliderMax();
+            });}
             let currentParent = ayeContainerChildren[index]! as HTMLDivElement;
             currentParent.style.color = 'rgba(0, 126, 109, 0.76)';
             autoScroller(currentParent);
@@ -105,12 +135,13 @@ export default class Audioplayer extends React.Component<props , state> {
                 behavior: 'smooth'
             });
         }
+        
 
         closeIcon.addEventListener('click', e => {
             audioPlayerContainer.style.opacity = '0';
-            // currentAudio.pause();
             audio.setAttribute('src', '');
             audio1.setAttribute('src', '');
+            scrollTop.style.bottom = "30px"
             textContainers.forEach((item) => {
                 item.style.color ='rgba(34, 34, 34, 0.733)';           
             })          
@@ -133,7 +164,6 @@ export default class Audioplayer extends React.Component<props , state> {
             if(isnew) {
                 currentAudio.play();
                 playState = 'pause';
-                this.setState({playsate: faPauseCircle})
                 cancelAnimationFrame(raf);
                 requestAnimationFrame(whilePlaying);
                 return
@@ -142,12 +172,10 @@ export default class Audioplayer extends React.Component<props , state> {
                 currentAudio.play();              
                 requestAnimationFrame(whilePlaying);
                 playState = 'pause';
-                this.setState({playsate: faPauseCircle})
             } else {
                 currentAudio.pause();
                 cancelAnimationFrame(raf);
                 playState = 'play';
-                this.setState({playsate: faPlayCircle})
             }
         }
 
@@ -156,15 +184,12 @@ export default class Audioplayer extends React.Component<props , state> {
         
 
         muteIconContainer.addEventListener('click', () => {
-            console.log('yup')
             if(muteState === 'unmute') {
-                audio.muted = true;
+                currentAudio.muted = true;
                 muteState = 'mute';
-                this.setState({mutestate: faVolumeMute})
             } else {
-                audio.muted = false;
+                currentAudio.muted = false;
                 muteState = 'unmute';
-                this.setState({mutestate: faVolumeUp})
             }
         });
 
@@ -180,12 +205,7 @@ export default class Audioplayer extends React.Component<props , state> {
        
 
 
-        const audio = document.querySelector('#audioPlayer')! as HTMLAudioElement;
-        const audio1 = document.querySelector('#audioPlayer1')! as HTMLAudioElement;
-        let currentAudio = audio;
-        const durationContainer = document.getElementById('duration')!;
-        const currentTimeContainer = document.getElementById('current-time')!;
-        let raf: any = null;
+        
 
         const calculateTime = (secs: number) => {
             const minutes = Math.floor(secs / 60);
@@ -195,43 +215,36 @@ export default class Audioplayer extends React.Component<props , state> {
         }
 
         const displayDuration = () => {
-            durationContainer.textContent = calculateTime(audio!.duration);
+            durationContainer.textContent = calculateTime(currentAudio!.duration);
         }
 
         const setSliderMax = () => {
-            seekSlider.max = Math.floor(audio!.duration).toString();
+            seekSlider.max = Math.floor(currentAudio!.duration).toString();
         }
 
         
 
         const whilePlaying = () => {
-            seekSlider.value = Math.floor(audio!.currentTime).toString();
+            seekSlider.value = Math.floor(currentAudio!.currentTime).toString();
             currentTimeContainer.textContent = calculateTime(+seekSlider.value);
             audioPlayerContainer.style.setProperty('--seek-before-width', `${+seekSlider.value / +seekSlider.max * 100}%`);
             raf = requestAnimationFrame(whilePlaying);
         }
 
-        if (audio.readyState > 0) {
-            displayDuration();
-            setSliderMax();
-        } else {
-            audio.addEventListener('loadedmetadata', () => {
-            displayDuration();
-            setSliderMax();
-        });}
+        
     
 
 
         seekSlider.addEventListener('input', () => {
             currentTimeContainer.textContent = calculateTime(+seekSlider.value);
-            if(!audio.paused) {
+            if(!currentAudio.paused) {
                 cancelAnimationFrame(raf);
             }
         });
 
         seekSlider.addEventListener('change', () => {
-            audio.currentTime = +seekSlider.value;
-            if(!audio.paused) {
+            currentAudio.currentTime = +seekSlider.value;
+            if(!currentAudio.paused) {
                 requestAnimationFrame(whilePlaying);
             }
         });
