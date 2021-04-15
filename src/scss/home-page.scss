@@ -11,6 +11,9 @@ html, body, #root {
 }
 .Home-page {
   height: 150%;
+  width: 95%;
+  overflow: hidden;
+  margin: auto;
 }
 .home-top {
   height: 70%;
@@ -23,7 +26,6 @@ html, body, #root {
   height: 20%;
   padding: 5px 10px;
   z-index: 300;
-  
   position: relative;
   img {
     height: 210px;
@@ -75,7 +77,7 @@ html, body, #root {
   }
 }
 .home-middle {
-  height: 25%;
+  height: 15%;
   background-color: rgba(128, 128, 128, 0.671);
   position: relative;
 }
@@ -126,6 +128,10 @@ html, body, #root {
     font-weight: 500;
     direction: rtl;
     @include centeredtop();
+  }
+  input::placeholder {
+    color: rgba(255, 255, 255, 0.651);
+    font-size: 20px;
   }
   input:focus {
     outline: none;
