@@ -1,13 +1,12 @@
 
 
-const cacheName = 'v10';
+const cacheName = 'v11';
 const self = this;
 
 // eslint-disable-next-line 
 const ignored = self.__WB_MANIFEST;
 
 self.addEventListener('install', e => {
-    console.log('installed')
     e.waitUntil(
         caches.open(cacheName).then(cache => {
             cache.add('./index.html')
@@ -18,7 +17,6 @@ self.addEventListener('install', e => {
 })
 
 self.addEventListener('activate', e => {
-    console.log('activated');
     e.waitUntil(
         caches.keys().then(cacheNames => {
             Promise.all(
@@ -33,31 +31,9 @@ self.addEventListener('activate', e => {
     )
 })
 
-self.addEventListener('fetch', e => {
-    
-    if(e.request.url === 'https://quranproject12.netlify.app') {
-        e.respondWith(fetch(e.request).then(
-            res => res
-        ).catch(async error => {
-            console.log(error, 'serving from cache')
-            let cache = await caches.open(cacheName);
-            let offRespond = await cache.match('./index.html');
-            return offRespond;
-        }))
-    }
-    if (e.request.mode === 'navigate') {
-        console.log(e.request.url)
-        e.respondWith(fetch(e.request).then(
-            res => res
-        ).catch(
-            async err => {
-                let cache = await caches.open(cacheName);
-                let offlineRespond = await cache.match('./index.html');
-                return offlineRespond;
-            }
-        ))
-    } 
-    else {
+self.addEventListener('fetch', (e) => {
+
+    if( !e.request.url.includes('.mp3') ) {
         e.respondWith(fetch(e.request).then(
             res => {
                 const reaClone = res.clone();
@@ -69,7 +45,6 @@ self.addEventListener('fetch', e => {
             ).catch(
             async err => {
                 console.log(err);
-                console.log("fetching from cache")
                 let cache = await caches.open(cacheName);
                 let offlineRespond = await cache.match(e.request);
                 return offlineRespond;
@@ -77,5 +52,31 @@ self.addEventListener('fetch', e => {
         )
         );
     }
+    
+    // if(e.request.url === 'https://quranproject12.netlify.app/') {
+    //     e.respondWith(fetch(e.request).then(
+    //         res => res
+    //     ).catch(async error => {
+    //         console.log(error, 'serving from cache')
+    //         let cache = await caches.open(cacheName);
+    //         let offRespond = await cache.match('./index.html');
+    //         return offRespond;
+    //     }))
+    // }
+    // if (e.request.mode === 'navigate') {
+    //     console.log(e.request.url)
+    //     e.respondWith(fetch(e.request).then(
+    //         res => res
+    //     ).catch(
+    //         async err => {
+    //             let cache = await caches.open(cacheName);
+    //             let offlineRespond = await cache.match('./index.html');
+    //             return offlineRespond;
+    //         }
+    //     ))
+    // } 
+    // else {
+        
+    // }
    
 })

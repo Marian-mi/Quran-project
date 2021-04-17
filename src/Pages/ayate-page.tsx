@@ -71,7 +71,7 @@ export default class ayatePage extends React.Component<props, state> {
         />
     })
 
-    ayeMaker = (item: string[], index:number, ayeStyle: object, tarjomeStyle: object, count: number ) => {
+    ayeMaker = (item: string[], index:number, count: number ) => {
         if (this.sorreno === 1 && index === 0 ) {
             return;    
         }
@@ -81,13 +81,13 @@ export default class ayatePage extends React.Component<props, state> {
         return <div
             className="aye-text"                       
             key={item[0][2] + index.toString()} >  
-            <p  style={ayeStyle}  className="ayeText">{item[index]}</p>
-            <p  style={tarjomeStyle} className="ayeText ayeTarjome">{tarjomeAnsarian[this.start + count + index - 1]}</p>
+            <p className="ayeText ayeitself">{item[index]}</p>
+            <p className="ayeText ayeTarjome">{tarjomeAnsarian[this.start + count + index - 1]}</p>
             {this.buttonMaker}
         </div>
     }
 
-    observerCallback = (ayeS: object, tarjomeS:object) => {
+    observerCallback = () => {
         console.log(this.sorreno)
         let index = this.state.ayeCounter;
         let arr = [];
@@ -99,7 +99,7 @@ export default class ayatePage extends React.Component<props, state> {
             item = this.AyeText
         }
         for(let i = 0; i < 20; i++) {
-            arr.push(this.ayeMaker(item, i, ayeS, tarjomeS, index ));
+            arr.push(this.ayeMaker(item, i, index ));
             if( i === 19) {
                 this.stateUpdater(arr, index)
             }
@@ -131,20 +131,24 @@ export default class ayatePage extends React.Component<props, state> {
     }
 
     componentDidMount() {
-        window.addEventListener('storage', () => {
-            let ayeS = localStorage.getItem('ayeFont') as string;
-            this.setState({ayeSize: ayeS});
-            let tarjoemS = localStorage.getItem('tarjomeFont') as string;
-            this.setState({tarjoemSize: tarjoemS})  
-        })
-        const ayeStyle = {
-            fontSize: localStorage.getItem('ayeFont') as string
-        }
-        const tarjomeStyle = {
-            fontSize: localStorage.getItem('tarjomeFont') as string
-        }
+        
+        let ayeS = localStorage.getItem('ayeFont') as string;
+        this.setState({ayeSize: ayeS});
+        let tarjoemS = localStorage.getItem('tarjomeFont') as string;
+        this.setState({tarjoemSize: tarjoemS})  
+        
 
-        this.observerCallback(ayeStyle, tarjomeStyle);
+        const ayetexts = document.querySelectorAll<HTMLParagraphElement>('.ayeitself')!
+        const tarjometexts = document.querySelectorAll<HTMLParagraphElement>('.ayeTarjome')!
+        
+        ayetexts.forEach(item => {
+            item.style.fontSize = this.state.ayeSize;
+        })
+        tarjometexts.forEach(item => {
+            item.style.fontSize = this.state.tarjoemSize;
+        })
+
+        this.observerCallback();
 
         const playButtons = document.querySelectorAll('.playButton')!;
         let sorreno = this.props.location.state.sooreNumber;
@@ -170,14 +174,22 @@ export default class ayatePage extends React.Component<props, state> {
         copyButtons.forEach(item => {
             item.addEventListener('click', this.copyFunction)
         })
-        const ayeStyle = {fontSize: this.state.ayeSize};
-        const tarjomeStyle = {fontSize: this.state.tarjoemSize};
+
+        const ayetexts = document.querySelectorAll<HTMLParagraphElement>('.ayeitself')!
+        const tarjometexts = document.querySelectorAll<HTMLParagraphElement>('.ayeTarjome')!
+        
+        ayetexts.forEach(item => {
+            item.style.fontSize = this.state.ayeSize;
+        })
+        tarjometexts.forEach(item => {
+            item.style.fontSize = this.state.tarjoemSize;
+        })
         
 
         let lastNode = document.querySelector('.aye-page-footer')!;
         let observer = new IntersectionObserver(entry => {
             if(entry[0].isIntersecting) {
-                this.observerCallback(ayeStyle, tarjomeStyle);
+                this.observerCallback();
             }
         }, {threshold: 0.3});
 

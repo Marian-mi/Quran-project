@@ -56,6 +56,8 @@ export default class Audioplayer extends React.Component<props , state> {
                 audioPlayerContainer.style.opacity= '1';
                 scrollTop.style.bottom = "110px";              
                 playState = 'pause';
+                let linkAdditions = addPadding(aye, sorreno);
+                audio.setAttribute('src', `https://audio.qurancdn.com/Alafasy/mp3/${linkAdditions.soore}${linkAdditions.aye}.mp3`);
                 autoplayHandler(aye, sorreno, mainDivIndex);           
             })
         })
@@ -66,10 +68,7 @@ export default class Audioplayer extends React.Component<props , state> {
             if(currentAye > this.props.ayatCount) {
                 return
             }
-            let aye = currentAye.toString().padStart(3, '0');
-            let soore = currentSoore.toString().padStart(3, '0');
             currentAudio = audio;
-            currentAudio.setAttribute('src', `https://audio.qurancdn.com/Alafasy/mp3/${soore}${aye}.mp3`);
             if (currentAudio.readyState > 0) {
                 displayDuration();
                 setSliderMax();
@@ -84,12 +83,13 @@ export default class Audioplayer extends React.Component<props , state> {
             requestAnimationFrame(whilePlaying);         
             currentAudio.play();                     
             currentAye++;
-            index++
+            index++;
+            let linkAdditions = addPadding(currentAye, currentSoore);
+            audio1.setAttribute('src', `https://audio.qurancdn.com/Alafasy/mp3/${linkAdditions.soore}${linkAdditions.aye}.mp3`);
             currentAudio.onended = () => {
                 currentParent.style.color = 'rgba(34, 34, 34, 0.733)';
                 cancelAnimationFrame(raf);
-                autoplayHandler1(currentAye, currentSoore, index);
-                
+                autoplayHandler1(currentAye, currentSoore, index);             
             };
         }
 
@@ -101,10 +101,9 @@ export default class Audioplayer extends React.Component<props , state> {
             if(currentAye > this.props.ayatCount) {
                 return
             }
-            let aye = currentAye.toString().padStart(3, '0');
-            let soore = currentSoore.toString().padStart(3, '0');
+            
             currentAudio = audio1;
-            currentAudio.setAttribute('src', `https://audio.qurancdn.com/Alafasy/mp3/${soore}${aye}.mp3`);
+            
             if (currentAudio!.readyState > 0) {
                 displayDuration();
                 setSliderMax();
@@ -119,12 +118,22 @@ export default class Audioplayer extends React.Component<props , state> {
             requestAnimationFrame(whilePlaying);
             currentAudio.play();               
             currentAye++;
-            index++
+            index++;
+            let linkAdditions = addPadding(currentAye, currentSoore);
+            audio.setAttribute('src', `https://audio.qurancdn.com/Alafasy/mp3/${linkAdditions.soore}${linkAdditions.aye}.mp3`);
             currentAudio.onended = () => {
                 currentParent.style.color = 'rgba(34, 34, 34, 0.733)';
                 cancelAnimationFrame(raf);                
                 autoplayHandler(currentAye, currentSoore, index)
             };
+        }
+
+        const addPadding = (currentAye: number, currentSoore: number) => {
+            let result = {
+                aye:  currentAye.toString().padStart(3, '0'),
+                soore: currentSoore.toString().padStart(3, '0')
+            }
+            return result;
         }
 
         const autoScroller = (element: HTMLElement) => {
