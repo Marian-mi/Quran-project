@@ -68,6 +68,7 @@ export default class Audioplayer extends React.Component<props , state> {
             if(currentAye > this.props.ayatCount) {
                 return
             }
+            
             currentAudio = audio;
             if (currentAudio.readyState > 0) {
                 displayDuration();

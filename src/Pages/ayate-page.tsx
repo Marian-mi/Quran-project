@@ -24,6 +24,9 @@ type props = {
             end: number;
             ayeName: string;
             sooreNumber: number;
+            isComingFromSearch: boolean;
+            scrolltoAye: number;
+            ayatCount: number;
         }
     }
 }
@@ -152,13 +155,28 @@ export default class ayatePage extends React.Component<props, state> {
 
         const playButtons = document.querySelectorAll('.playButton')!;
         let sorreno = this.props.location.state.sooreNumber;
-        playButtons.forEach((item, index) => {
-            if(sorreno === 1) {
-                item.setAttribute('ayeno', (index+=2).toString())
-            }else {              
-                item.setAttribute('ayeno', (index+=1).toString())               
-            }
-        })
+        if( !this.props.location.state.isComingFromSearch ) {
+            console.log('nooo')
+
+            playButtons.forEach((item, index) => {
+                if(sorreno === 1) {
+                    item.setAttribute('ayeno', (index+=2).toString())
+                }else {              
+                    item.setAttribute('ayeno', (index+=1).toString())               
+                }
+            })
+        }else {
+                   
+            playButtons.forEach((item, index) => {
+                let startAye = (this.props.location.state.scrolltoAye - 5) + index;
+                console.log(startAye)
+                if(sorreno === 1) {
+                    item.setAttribute('ayeno', (startAye).toString())
+                }else {              
+                    item.setAttribute('ayeno', (startAye).toString())               
+                }
+            })
+        }
         const copyButtons = document.querySelectorAll('.copyButton')!;
         console.log(copyButtons);
         copyButtons.forEach(item => {
@@ -197,19 +215,40 @@ export default class ayatePage extends React.Component<props, state> {
 
         const playButtons = document.querySelectorAll('.playButton')!;
         let sorreno = this.props.location.state.sooreNumber;
-        playButtons.forEach((item, index) => {
-            if(sorreno === 1) {
-                item.setAttribute('ayeno', (index+=2).toString())
-            }else {              
-                item.setAttribute('ayeno', (index+=1).toString())               
-            }
-        })
+
+        if ( !this.props.location.state.isComingFromSearch ) {
+            
+            playButtons.forEach((item, index) => {
+                if(sorreno === 1) {
+                    item.setAttribute('ayeno', (index+=2).toString())
+                }else {              
+                    item.setAttribute('ayeno', (index+=1).toString())               
+                }
+            })
+        }else {       
+            playButtons.forEach((item, index) => {
+                let startAye = (this.props.location.state.scrolltoAye - 5) + index;
+                if(sorreno === 1) {
+                    item.setAttribute('ayeno', (startAye).toString())
+                }else {              
+                    item.setAttribute('ayeno', (startAye).toString())               
+                }
+            })
+        }
     }
 
     
 
     
     render() {
+        let totalAyats
+
+        if (this.props.location.state.isComingFromSearch) {         
+            totalAyats = this.props.location.state.ayatCount;
+        }else {
+            totalAyats = this.AyeText.length;
+        }
+
 
         const scrollToTop = () => {
             window.scroll({
@@ -250,7 +289,7 @@ export default class ayatePage extends React.Component<props, state> {
                 <div className="scrollTop"><FontAwesomeIcon icon={faArrowCircleUp} onClick={scrollToTop} /></div>
                 <div className="aye-page-footer">...</div>
                 <ErrorBoundary>
-                    <Audioplayer soreNumber={this.props.location.state.sooreNumber} ayatCount={this.AyeText.length}/>
+                    <Audioplayer soreNumber={this.props.location.state.sooreNumber} ayatCount={totalAyats}/>
                 </ErrorBoundary>
             </div>
             
