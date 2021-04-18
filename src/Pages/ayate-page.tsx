@@ -168,7 +168,7 @@ export default class ayatePage extends React.Component<props, state> {
         }else {
                    
             playButtons.forEach((item, index) => {
-                let startAye = (this.props.location.state.scrolltoAye - 5) + index;
+                let startAye = (this.props.location.state.scrolltoAye) + index;
                 console.log(startAye)
                 if(sorreno === 1) {
                     item.setAttribute('ayeno', (startAye).toString())
@@ -227,7 +227,7 @@ export default class ayatePage extends React.Component<props, state> {
             })
         }else {       
             playButtons.forEach((item, index) => {
-                let startAye = (this.props.location.state.scrolltoAye - 5) + index;
+                let startAye = (this.props.location.state.scrolltoAye) + index;
                 if(sorreno === 1) {
                     item.setAttribute('ayeno', (startAye).toString())
                 }else {              

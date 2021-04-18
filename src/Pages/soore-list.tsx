@@ -1,7 +1,7 @@
 import React from 'react';
 import '../scss/soore-list.scss';
 import SooreList from '../Components/sooreList';
-import Sura from '../assets/ts/quran-metadata'
+import Sura from '../assets/ts/quran-metadata';
 import { Link } from 'react-router-dom';
 
 type props = {

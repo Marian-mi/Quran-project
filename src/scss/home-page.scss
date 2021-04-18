@@ -96,6 +96,16 @@ html, body, #root {
     font-weight: 700;
   }
 }
+.directingTosearch {
+  width: 70%;
+  direction: rtl;
+  span {
+    position: absolute;
+    color: rgba(255, 255, 255, 0.74);
+    @include centeredtop();
+    font-size: 20px;
+  }
+}
 .searchContainer {
   position: relative;
   height: 35%;

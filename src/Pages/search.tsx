@@ -24,7 +24,7 @@ export default class Search extends React.Component<props, state> {
 
     componentDidUpdate () {
         const noResult = document.querySelector('#noResult')! as HTMLDivElement;
-        const searchContainer = document.querySelector('#serach-container')! as HTMLDivElement;
+        const searchContainer = document.querySelector('#search-container')! as HTMLDivElement;
         const results = searchContainer.children.length; 
         if( results < 3 ) {
             noResult.style.display = 'block'
@@ -88,8 +88,8 @@ export default class Search extends React.Component<props, state> {
                 to={{
                     pathname:'/Aye',
                     state: {
-                        start: item.index - 5,
-                        end: item.index + 5,
+                        start: item.index,
+                        end: item.end ,
                         ayeName: item.ayeName,
                         sooreNumber: item.cnt,
                         isComingFromSearch: true,
@@ -98,13 +98,13 @@ export default class Search extends React.Component<props, state> {
                     }
                 }}
                 >
-                <div className="ayeText aye-main aye-text search-result" key={item.index}>{item.item} 
+                <div className="search-result" key={item.index}><p>{item.item}</p> 
                 <p>( سوره {item.ayeName} -- آیه شماره {item.index - item.start+1} )</p></div>
                 </Link>
             }else return null;
         })
         return (
-            <div id="serach-container">
+            <div id="search-container">
                 <input
                 type="text"
                 name="search"
