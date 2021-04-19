@@ -30,7 +30,7 @@ export default class searchField extends React.Component<props, state> {
             <div className="searchContainer">
                 <Link to="/Search" style={linkStyle}>
                 <div className="searchField" >
-                    <div className="directingTosearch"><span>برای ورود به صفحه جستجو کلیک کنید</span></div>                                 
+                    <div className="directingTosearch"><span>ورود به صفحه جستجو</span></div>                                 
                     <div className="searchlogo">                       
                         <FontAwesomeIcon                       
                         icon={faSearch}

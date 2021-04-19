@@ -53,27 +53,27 @@
 }
 #searchQuery {
     display: block;
-    margin: 10px auto;
-    width: 70%;
+    margin: 50px auto;
+    width: 80%;
     height: 50px;
     border-radius: 50px;
-    padding: 0 20px;
+    padding: 0 50px;
     font-size: 22px;
     direction: rtl;
 }
 
 .search-result {
     padding: 10px  !important;
-    width: 80%;
+    width: 70%;
     position: relative;
-    left: 20%;
+    left: 30%;
     background-color: rgba(128, 128, 128, 0.356);
-    margin: 40px 0;
+    margin: 20px 0;
     text-align: center;
     box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.637);
     p {
         font-size: 22px;
-        margin: 20px 0;
+        margin: 0;
         font-family: $font-farsi;
         color: rgba(0, 0, 0, 0.808);
         line-height: 40px;
@@ -83,16 +83,19 @@
     }
     
 }
-a:nth-child(odd) div {
+.searchPageLinks:nth-child(odd) div {
     left: 0 !important;
-    right: 20% !important;
+    right: 30% !important;
+}
+#lastNode {
+    height: 100px;
 }
 #search-container {
     background-image: url(../assets/images/geometric-composition.jpg);
     background-size: cover;
     height: 100%;
     overflow: auto;
-    padding: 0 20%;
+    padding: 0 5%;
     ::-webkit-input-placeholder { 
         font-size: 18px;
       }

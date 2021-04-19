@@ -1,62 +1,45 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import {Qurantext} from '../assets/ts/quran-simple-plain';
 import Sura from '../assets/ts/quran-metadata';
 import { Link } from 'react-router-dom';
-import '../scss/ayePage.scss';
 
 
-type props = {
-    
-}
-type state = {
-    query: string;
-}
 
 
-export default class Search extends React.Component<props, state> {
-   
-    constructor(props: props) {
-        super(props)
-        this.state = {
-            query: ''
-        }
-    }  
+type resObj = { item: string, index: number, cnt: number, start: number, end: number, ayeName: string }[]
 
-    componentDidUpdate () {
-        const noResult = document.querySelector('#noResult')! as HTMLDivElement;
-        const searchContainer = document.querySelector('#search-container')! as HTMLDivElement;
-        const results = searchContainer.children.length; 
-        if( results < 3 ) {
-            noResult.style.display = 'block'
-        }else {
-            noResult.style.display = 'none'
-        }
-    }
 
-    render() {
-        const linkStyle = {
-            textDecoration: 'none'
-        }
+export default function Search () {
 
-        const searchHandler = (e: ChangeEvent<HTMLInputElement>) => {
-            const input = e.target.value;
+    const [query, setQuery] = useState('');
+    const [results, setResults] = useState<resObj | undefined>();
+    const [elementsResults, setelementsResults] = useState<(JSX.Element | null)[]>();
+    const [displayedResults, setDisplayedresults ] = useState<(JSX.Element | null)[]>();
+    const [itemCount, setitemCount] = useState(0);
+
+
+    const searchHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        setTimeout(() => {
+            const input = e.target.value;      
             if ( input.length > 3) {
-                setTimeout(() => {             
-                    this.setState({ query: input});
-                }, 1000);
+                setQuery(input);
+                setitemCount(0);
             }
-        }
+           
+        }, 500);
+    }
     
-    
-        const results = [{item: 'none', index: 3, cnt: 0, start: 0, end: 0, ayeName: 'g'}];
-        if ( this.state.query.length > 3) {
+    useEffect(() => {
+        const result = [{item: 'none', index: 3, cnt: 0, start: 0, end: 0, ayeName: 'g'}];
+        if ( query.length > 3 ) {
             for ( let i = 0; i < Qurantext.length; i++) {
-                let query = RegExp(this.state.query , 'gi');
-                if ( query.test(Qurantext[i]) ) {
-                    let theSura= 0;
-                    let start = 0;
-                    let end = 0;
-                    let name = '';
+
+                let pattern = RegExp(query , 'gi');
+
+                if ( pattern.test(Qurantext[i]) ) {
+
+                    let theSura= 0; let start = 0; let end = 0; let name = '';
+
                     Sura.Sura.forEach((item, index, arr) => {
                         if ( i >= item[0] && i < arr[index + 1][0]) {
                             theSura = index;
@@ -65,60 +48,96 @@ export default class Search extends React.Component<props, state> {
                             name = item[4] as string;
                         }
                     })
+
                     // if ( i < 7) {--i};
-                    let info = {
-                        item: Qurantext[i],
-                        index: i,
-                        cnt: theSura,
-                        start: start,
-                        end: end,
-                        ayeName: name
-                    }
-                    results.push(info)
+                    let info = { item: Qurantext[i], index: i, cnt: theSura, start: start, end: end, ayeName: name }
+                    result.push(info)
                 }
-            }
+            }       
         }
+        
+        setResults(result);
+    }, [query]);
+
+    useEffect(() => {
+        if (results !== undefined ) {
+            const linkStyle = { textDecoration: 'none'}
+            if ( results !== undefined ) {
+                const res = results.map((item, index) => {
+                    if( index !== 0 ) {
+        
+                        return <Link key={item.item[0][5]} style={linkStyle} className="searchPageLinks"
+                        to={{
+                            pathname:'/Aye',
+                            state: {
+                                start: item.index,
+                                end: item.end,
+                                ayeName: item.ayeName,
+                                sooreNumber: item.cnt,
+                                isComingFromSearch: true,
+                                scrolltoAye: (item.index - item.start+1),
+                                ayatCount: (item.end - item.start)
+                            }
+                        }}>
+                        
+                        <div className="search-result" key={item.index-item.start}><p>{item.item}</p> 
+                        <p>( سوره {item.ayeName} -- آیه شماره {item.index - item.start+1} )</p></div>
+                        </Link>
+        
+                    }else return null;
+                    
+                })
+                setelementsResults(res);
+            }  
+        }
+    }, [results])
 
 
-    
-    
-        const displayedResults = results.map((item, index) => {
-            if( index !== 0 ) {
-                return <Link key={item.item[0][5]} style={linkStyle}
-                to={{
-                    pathname:'/Aye',
-                    state: {
-                        start: item.index,
-                        end: item.end ,
-                        ayeName: item.ayeName,
-                        sooreNumber: item.cnt,
-                        isComingFromSearch: true,
-                        scrolltoAye: (item.index - item.start+1),
-                        ayatCount: (item.end - item.start)
-                    }
-                }}
-                >
-                <div className="search-result" key={item.index}><p>{item.item}</p> 
-                <p>( سوره {item.ayeName} -- آیه شماره {item.index - item.start+1} )</p></div>
-                </Link>
-            }else return null;
-        })
-        return (
-            <div id="search-container">
-                <input
-                type="text"
-                name="search"
-                id="searchQuery"
-                onChange={(e) => {searchHandler(e)}}
-                placeholder="با وارد کردن حداقل سه حرف جست و جو را شروع کنید"
-                defaultValue=""
-                autoComplete="off"
-                ></input>
+    useEffect(() => {
+        if (elementsResults !== undefined) {
+            const elementsTorender = elementsResults!.splice(itemCount, itemCount + 10);
+            setDisplayedresults(elementsTorender);
+        }
+        //eslint-disable-next-line
+    },[elementsResults])
+
+    useEffect(() => {
+        const lastnode = document.querySelector('#lastNode')!;
+            const observer = new IntersectionObserver(entries => {
+                if ( entries[0].isIntersecting ) {
+                    itemMaker();
+                }
+            }, {threshold: 1});
+            observer.observe(lastnode)
+            return () => {
+                observer.disconnect();
+            }
+        //eslint-disable-next-line
+    },[displayedResults] )
+
+    const itemMaker = () => {
+        if ( elementsResults !== undefined && displayedResults !== undefined) {
+            const index = itemCount + 10;
+            const elementsTorender = elementsResults.splice(index, index+10);
+            setDisplayedresults([...displayedResults,...elementsTorender])
+            setitemCount(itemCount+10);
+        }
+    }
+
+
+    return(
+        <div id="search-container">
+
+                <input type="text" name="search" id="searchQuery" onChange={(e) => {searchHandler(e)}}
+                placeholder="با وارد کردن حداقل سه حرف جست و جو را شروع کنید" 
+                defaultValue="" autoComplete="off" ></input>
+
                 {displayedResults}
+                <div id="lastNode"></div>
                 <div id="noResult">
                     <p>نتیجه ای یافت نشد</p>
                 </div>
-            </div>
-        )
-    }
+
+        </div>
+    )
 }
