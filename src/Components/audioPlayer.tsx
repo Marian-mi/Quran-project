@@ -40,7 +40,27 @@ export default class Audioplayer extends React.Component<props , state> {
         const currentTimeContainer = document.getElementById('current-time')!;
         let raf: any = null;
         let playState = 'play';
-        let muteState = 'unmute';
+        let muteState = 'unmute'; let Qari: string; let audioType: string;
+
+
+        if (localStorage.getItem('qariName')) {
+            Qari = localStorage.getItem('qariName') as string;
+        }else {
+            Qari = 'Alafasy';
+        }
+
+        if( Qari === 'Alafasy' ) {
+            audioType = 'mp3';
+        }
+        if( Qari === 'Minshawi' ) {
+            audioType = 'mp3';
+            Qari = 'Minshawi/Mujawwad';
+        }
+        if ( Qari === 'Husary' ) {
+            Qari = 'Husary/Mujawwad';
+            audioType = 'ogg'
+        }
+
  
         const playButtons = document.querySelectorAll('.playButton')!;
         let sorreno = this.props.soreNumber;
@@ -57,7 +77,7 @@ export default class Audioplayer extends React.Component<props , state> {
                 scrollTop.style.bottom = "110px";              
                 playState = 'pause';
                 let linkAdditions = addPadding(aye, sorreno);
-                audio.setAttribute('src', `https://audio.qurancdn.com/Alafasy/mp3/${linkAdditions.soore}${linkAdditions.aye}.mp3`);
+                audio.setAttribute('src', `https://audio.qurancdn.com/${Qari}/${audioType}/${linkAdditions.soore}${linkAdditions.aye}.${audioType}`);
                 autoplayHandler(aye, sorreno, mainDivIndex);           
             })
         })
@@ -86,7 +106,7 @@ export default class Audioplayer extends React.Component<props , state> {
             currentAye++;
             index++;
             let linkAdditions = addPadding(currentAye, currentSoore);
-            audio1.setAttribute('src', `https://audio.qurancdn.com/Alafasy/mp3/${linkAdditions.soore}${linkAdditions.aye}.mp3`);
+            audio1.setAttribute('src', `https://audio.qurancdn.com/${Qari}/${audioType}/${linkAdditions.soore}${linkAdditions.aye}.${audioType}`);
             currentAudio.onended = () => {
                 currentParent.style.color = 'rgba(34, 34, 34, 0.733)';
                 cancelAnimationFrame(raf);
@@ -121,7 +141,7 @@ export default class Audioplayer extends React.Component<props , state> {
             currentAye++;
             index++;
             let linkAdditions = addPadding(currentAye, currentSoore);
-            audio.setAttribute('src', `https://audio.qurancdn.com/Alafasy/mp3/${linkAdditions.soore}${linkAdditions.aye}.mp3`);
+            audio.setAttribute('src', `https://audio.qurancdn.com/${Qari}/${audioType}/${linkAdditions.soore}${linkAdditions.aye}.${audioType}`);
             currentAudio.onended = () => {
                 currentParent.style.color = 'rgba(34, 34, 34, 0.733)';
                 cancelAnimationFrame(raf);                

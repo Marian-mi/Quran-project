@@ -1,10 +1,12 @@
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
+import React, { FormEvent } from 'react';
 import '../scss/setting.scss';
 import Rangeinput from '../Components/range-input';
 
-export default class Setting extends React.Component {
+
+
+export default class Setting extends React.Component{
 
 
     render() {
@@ -14,12 +16,19 @@ export default class Setting extends React.Component {
             settingContainer.classList.remove('settingOpen')           
         }
 
+        const qariHandler = (e: FormEvent) => {
+            e.preventDefault();
+            const select = document.querySelector('#qariname')! as HTMLSelectElement;
+            const input = select.value;
+            localStorage.setItem('qariName', input);
+        }
+
         
 
-        const openSettingBody = () => {
-            const settingBody = document.querySelector('.setting-body') as HTMLDivElement;
+        const openSettingBody = (item: string, iconindex: number) => {
+            const settingBody = document.querySelector(`.${item}`) as HTMLDivElement;
             const bodyHeight = settingBody.scrollHeight;
-            const icon = document.querySelector('.body-headers-icon')!;
+            const icon = document.querySelector(`.body-headers-icon${iconindex}`)!;
             settingBody.classList.toggle('setting-open');           
             if( settingBody.classList.contains('setting-open') ) {
                 settingBody.style.height = `${bodyHeight}px`; 
@@ -42,27 +51,30 @@ export default class Setting extends React.Component {
                     
                 </div>
                 <div className="setting-body-container">
-                    <div onClick={openSettingBody} className="body-headers">تنظیمات سایز فونت
-                    <div className="body-headers-icon">+</div>
+                    <div onClick={() => {openSettingBody('setting-body', 1)}} className="body-headers">تنظیمات سایز فونت
+                        <div className="body-headers-icon1">+</div>
                     </div>
                     <div className="setting-body">
-                    <Rangeinput
-                    defaultValue="35"
-                    inputName="ayeFontSize"
-                    maincontainerClass="setting-body1"
-                    localstogrageKey="ayeFont"
-                    text="عربی"
-                    changesOutputid= "ayeCurrentAmount"
-                   
-                    />
-                    <Rangeinput
-                    defaultValue="26"
-                    inputName="tarjomeFontSize"
-                    maincontainerClass="setting-body1"
-                    text="ترجمه"
-                    localstogrageKey="tarjomeFont"
-                    changesOutputid="tarjoemCurrentAmount"
-                    />
+                        <Rangeinput defaultValue="35" inputName="ayeFontSize" maincontainerClass="setting-body1"
+                        localstogrageKey="ayeFont" text="عربی" changesOutputid= "ayeCurrentAmount"/>
+
+                        <Rangeinput defaultValue="26" inputName="tarjomeFontSize" maincontainerClass="setting-body1"
+                        text="ترجمه" localstogrageKey="tarjomeFont" changesOutputid="tarjoemCurrentAmount"/>
+                    </div>
+                    <div onClick={() => {openSettingBody('qari-options', 2)}} className="body-headers">تنظیمات قاری
+                        <div className="body-headers-icon2">+</div>
+                    </div>
+                    <div className="qari-options">
+                        <div>
+                            <form >
+                                <select name="qari-name" id="qariname">
+                                    <option value="Alafasy">العفاسی</option>
+                                    <option value="Husary">خلیل‌الحصری</option>
+                                    <option value="Minshawi">منشاوی</option>
+                                </select>
+                                <button id="qarisubmit" onClick={qariHandler}>ذخیره</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

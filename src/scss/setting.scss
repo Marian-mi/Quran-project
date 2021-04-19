@@ -45,7 +45,6 @@
 }
 
 .setting-body-container {
-    border: 1px solid $primary-color2;
     position: relative;
     width: 90%;
     margin: auto;
@@ -57,12 +56,15 @@
     direction: rtl;
     background-color: $primary-color2;
     padding: 20px 40px;
+    position: relative;
     color: rgba(255, 255, 255, 0.692);
     font-family: $font-farsi;
     font-size: 22px;
+    border: 1px solid white;
+    margin: 10px 0;
 }
 
-.body-headers-icon {
+.body-headers-icon1, .body-headers-icon2 {
     position: absolute;
     left: 40px;
     width: 20px;
@@ -82,12 +84,40 @@
     border: none;
 }
 
+.qari-options {
+    @extend .setting-body;
+    div {
+        background-color: white;
+        padding: 30px;
+    }
+    button {
+        width: 150px;
+        height: 30px;
+        margin-left: 50px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    select {
+        border-radius: 4px;
+        height: 30px;
+        width: 200px;
+        position: relative;
+        bottom: 50%;
+        font-size: 20px;
+    }
+    option {
+        
+        border-radius: 4px;
+    }
+}
+
 .setting-body1 {
     padding: 30px; 
     background-color: white;
-    font-size: 22px;
+    font-size: 24px;
     font-family: $font-farsi;
-    font-weight: 600;
+    font-weight: 500;
     color: $primary-color2;
     
     label {
@@ -96,16 +126,12 @@
         display: block;
     }
     input[type=submit] {
-        width: 90px;
+        width: 150px;
         height: 30px;
         margin-left: 30px;
         position: relative;
         bottom: 5px;
         border: none;
-        font-size: 22px;
-        color: $primary-color2;
-        font-weight: 600;
-
     }
     input[type = range] {
         background-color: rgba($color: $primary-color2, $alpha: 0.7);
