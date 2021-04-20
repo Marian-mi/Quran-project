@@ -2,7 +2,21 @@ $primary-color1: #ede6b9;
 $primary-color2: #316879;
 $border-radius-top: 0 0 100px 100px;
 $border-radius-bottom: 100px 100px 0 0;
-$font-farsi: Arial, Helvetica, sans-serif;
+$font-farsi: yekan;
+
+@font-face {
+  font-family: osmanTaha;
+  src: url(../assets/fonts/neirizi/neirizi.ttf);
+  font-weight: 400;
+}
+@font-face {
+  font-family: yekan;
+  src: url(../assets/fonts/yekan/Yekan.ttf);
+}
+@font-face {
+  font-family: vaziri;
+  src: url(../assets/fonts/vazir/Vazir-Medium-WOL.ttf);
+}
 @mixin centeredboth {
   top: 50%;
   left: 50%;

@@ -32,7 +32,7 @@
 .setting-headers {
     height: 80px;
     background-color: $primary-color2;
-    position: relative;
+    position: relative;   
     p {
         text-align: right;
         position: relative;
@@ -87,22 +87,22 @@
 
 .qari-options {
     @extend .setting-body;
+    text-align: center;
     div {
         background-color: white;
         padding: 30px;
     }
     button {
-        width: 150px;
+        width: 100px;
         height: 30px;
-        margin-left: 50px;
+        margin-left: 20px;
         border: none;
-        border-radius: 4px;
         cursor: pointer;
     }
     select {
         border-radius: 4px;
         height: 30px;
-        width: 200px;
+        width: 150px;
         position: relative;
         bottom: 50%;
         font-size: 20px;
@@ -116,10 +116,11 @@
 .setting-body1 {
     padding: 30px; 
     background-color: white;
-    font-size: 24px;
+    font-size: 20px;
     font-family: $font-farsi;
     font-weight: 500;
     color: $primary-color2;
+    text-align: center;
     
     label {
         direction: rtl;
@@ -127,7 +128,7 @@
         display: block;
     }
     input[type=submit] {
-        width: 150px;
+        width: 100px;
         height: 30px;
         margin-left: 30px;
         position: relative;
@@ -152,5 +153,14 @@
     .setting-body-container {
         margin: auto;
         width: 70%;
+    }
+    .qari-options {
+        button {
+            width: 150px;
+            margin-left: 50px;
+        }
+        select {
+            width: 250px;
+        }
     }
 }

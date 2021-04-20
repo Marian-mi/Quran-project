@@ -58,6 +58,12 @@ export default function Search () {
         }
         
         setResults(result);
+        const noresult = document.querySelector('#noResult')! as HTMLDivElement;
+        if (result.length < 2 ) {
+            noresult.style.display = 'block';
+        }else {
+            noresult.style.display = 'none';
+        }
     }, [query]);
 
     useEffect(() => {

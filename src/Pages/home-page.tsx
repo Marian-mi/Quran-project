@@ -15,7 +15,7 @@ class Homepage extends React.Component {
                             <img src={logo} alt=""/>
                         </div>               
                       
-                    </div>
+                    </div> 
                     <div className="bannerContainer">
                         <div className="homeCover">
                             <h1>The Noble Quran</h1>

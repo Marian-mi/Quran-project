@@ -23,7 +23,8 @@
     margin: 15px auto ;
     font-size: 32px;
     color: rgba(34, 34, 34, 0.733);
-    font-family: $font-farsi;
+    font-family: osmanTaha;
+    font-weight: 500;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -60,6 +61,7 @@
     padding: 0 50px;
     font-size: 22px;
     direction: rtl;
+    font-family: osmanTaha;
 }
 
 .search-result {
@@ -72,14 +74,15 @@
     text-align: center;
     box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.637);
     p {
-        font-size: 22px;
+        font-size: 23px;
         margin: 0;
-        font-family: $font-farsi;
+        font-family: osmanTaha;
         color: rgba(0, 0, 0, 0.808);
         line-height: 40px;
     }
     p:nth-child(2) {
         color: rgba(255, 255, 255, 0.822);
+        font-size: 20px;
     }
     
 }
@@ -97,16 +100,16 @@
     overflow: auto;
     padding: 0 5%;
     ::-webkit-input-placeholder { 
-        font-size: 18px;
+        font-size: 16px;
       }
       ::-moz-placeholder {
-        font-size: 18px;
+        font-size: 16px;
       }
       :-ms-input-placeholder { 
-        font-size: 18px;
+        font-size: 16px;
       }
-      :-moz-placeholder {
-        font-size: 18px;
+      :-moz-placeholer {
+        font-size: 16px;
       }
 }
 #searchQuery:focus {
@@ -125,6 +128,7 @@
     margin: 25px 0;
     font-size: 28px;
     font-weight: 500;
+    font-family: yekan;
 }
 .aye-page-footer {
     height: 100px;
@@ -139,7 +143,8 @@
     background-color: rgba(128, 128, 128, 0.137);
     text-align: center;
     font-size: 24px;
-    font-family: $font-farsi;
+    font-family: osmanTaha;
+    word-spacing: 7px;
     p {
         margin: 10px 0;
     }
@@ -150,9 +155,9 @@
     box-shadow: 0px 5px 5px 1px rgba(0, 158, 137, 0.39);
     color: rgba(255, 255, 255, 0.623);
     text-align: center;
-    font-family: $font-farsi;
+    font-family: osmanTaha;
     padding-top: 8px;
-    font-size: 30px;
+    font-size: 32px;
     position: sticky;
     top: 0;
     border-top: 1px solid rgba(0, 0, 0, 0.705) ;
@@ -160,6 +165,7 @@
     p {
         position: absolute;
         @include centeredboth;
+        top: 70%;
     }
     
 }
@@ -187,18 +193,16 @@ path {
 .ayeButtons {
     width: 30%;
     position: relative;
-    height: 100px;
+    height: 120px;
     z-index: 100;
     p {
-        font-size: 18px;
+        font-size: 20px;
         text-align: center;
-        position: relative;
-        top: 40px;
     }
     svg {
         position: relative;
         right: 50%;
-        top: 50%;
+        top: 40%;
         transform: translate(50%, -50%);
     }
 }
