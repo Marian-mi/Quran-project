@@ -1,7 +1,7 @@
 import React from 'react';
 import '../scss/home-page.scss';
 import logo from '../assets/images/images.jpg';
-import SearchField from '../Components/searchField'
+import SearchField from '../Components/searchField';
 
 
 class Homepage extends React.Component {

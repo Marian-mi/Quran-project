@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import {Qurantext} from '../assets/ts/quran-simple-plain';
 import '../scss/ayePage.scss';
 import Buttons from  '../Components/buttons-inflex';
@@ -9,6 +9,7 @@ import tarjomeAnsarian from  '../assets/ts/tarjomeh/fa.ansarian';
 import { Link } from 'react-router-dom';
 import Audioplayer from '../Components/audioPlayer';
 import ErrorBoundary from '../Components/error-boundary';
+const Setting = lazy(() => import('../Components/settings'));
 
 declare module 'react' {
     interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
@@ -266,7 +267,7 @@ export default class ayatePage extends React.Component<props, state> {
        
         return (
             <div className="aye-main">
-                
+                <Suspense fallback={<div>Loading...</div>}><Setting /></Suspense>
                 <div className="aye-container">
                 <div className="aye-page-header">
                     <Link to="/" >

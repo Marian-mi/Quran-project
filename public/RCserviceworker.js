@@ -1,17 +1,23 @@
 
 
-const cacheName = 'v11';
+const cacheName = 'v14';
 const self = this;
-
+const statics = [
+    './static/js/bundle.js',
+    './static/js/main.chunk.js',
+    './static/js/vendors~main.chunk.js',
+    './index.html',
+    './static/media/fog.8bca4a29.jfif'
+]
 // eslint-disable-next-line 
 const ignored = self.__WB_MANIFEST;
 
 self.addEventListener('install', e => {
     e.waitUntil(
         caches.open(cacheName).then(cache => {
-            cache.add('./index.html')
+            cache.addAll(statics)
         }).catch(err => {
-            console.log(err)
+            console.log('error')
         })
     );
 })
@@ -31,27 +37,44 @@ self.addEventListener('activate', e => {
     )
 })
 
-self.addEventListener('fetch', (e) => {
 
-    if( !e.request.url.includes('.mp3') ) {
-        e.respondWith(fetch(e.request).then(
-            res => {
-                const reaClone = res.clone();
+self.addEventListener('fetch', e => {
+    e.respondWith(caches.open(cacheName).then(
+        cache => cache.match(e.request).then(resp => {
+            return resp || fetch(e.request).then(res => {
+                const resClone = res.clone();
                 caches.open(cacheName).then(cache => {
-                    cache.put(e.request, reaClone);
+                    cache.put(e.request, resClone)
                 })
                 return res
-            }
-            ).catch(
-            async err => {
-                console.log(err);
-                let cache = await caches.open(cacheName);
-                let offlineRespond = await cache.match(e.request);
-                return offlineRespond;
-            }
-        )
-        );
-    }
+            })
+        })
+    ))
+})
+
+
+
+// self.addEventListener('fetch', (e) => {
+
+//     if( !e.request.url.includes('.mp3') ) {
+//         e.respondWith(fetch(e.request).then(
+//             res => {
+//                 const reaClone = res.clone();
+//                 caches.open(cacheName).then(cache => {
+//                     cache.put(e.request, reaClone);
+//                 })
+//                 return res
+//             }
+//             ).catch(
+//             async err => {
+//                 console.log(err);
+//                 let cache = await caches.open(cacheName);
+//                 let offlineRespond = await cache.match(e.request);
+//                 return offlineRespond;
+//             }
+//         )
+//         );
+//     }
     
     // if(e.request.url === 'https://quranproject12.netlify.app/') {
     //     e.respondWith(fetch(e.request).then(
@@ -79,4 +102,3 @@ self.addEventListener('fetch', (e) => {
         
     // }
    
-})

@@ -1,11 +1,11 @@
 import './scss/home-page.scss';
 import Homepage from './Pages/home-page';
 import SooreList from './Pages/soore-list';
-import AyatPage from './Pages/ayate-page'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import { Fragment } from 'react';
-import Setting from  './Components/settings';
-import Search from './Pages/search'
+import { Fragment, lazy, Suspense } from 'react';
+
+const Search = lazy(() => import('./Pages/search'));
+const AyatPage = lazy(() => import('./Pages/ayate-page'));
 
 
 
@@ -13,7 +13,7 @@ function App() {
   return (
     
     <Router>
-      <Setting />
+      
       <>
         <Switch>
           <Route path="/" exact component={() => {
@@ -21,9 +21,11 @@ function App() {
               <Homepage />
               <SooreList />
             </Fragment>
-          }}></Route>
-          <Route path="/Aye" exact={false} component={AyatPage}></Route>
-          <Route path="/Search" component={Search}></Route>
+          }}></Route>      
+          <Suspense fallback={<div>Loading...</div>}>
+            <Route path="/Aye" exact={false} component={AyatPage}></Route>
+            <Route path="/Search" component={Search}></Route>
+          </Suspense>
         </Switch>
       </>
     </Router> 

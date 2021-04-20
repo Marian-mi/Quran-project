@@ -2,6 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import {Qurantext} from '../assets/ts/quran-simple-plain';
 import Sura from '../assets/ts/quran-metadata';
 import { Link } from 'react-router-dom';
+import '../scss/ayePage.scss'
 
 
 
