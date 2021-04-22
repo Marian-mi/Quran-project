@@ -29,8 +29,12 @@ export default function Search () {
            
         }, 500);
     }
-    
+    useEffect(()=> {
+        const noresult = document.querySelector('#noResult')! as HTMLDivElement;
+        noresult.style.display = 'none';
+    },[])
     useEffect(() => {
+        const noresult = document.querySelector('#noResult')! as HTMLDivElement;
         const result = [{item: 'none', index: 3, cnt: 0, start: 0, end: 0, ayeName: 'g'}];
         if ( query.length > 3 ) {
             for ( let i = 0; i < Qurantext.length; i++) {
@@ -58,7 +62,7 @@ export default function Search () {
         }
         
         setResults(result);
-        const noresult = document.querySelector('#noResult')! as HTMLDivElement;
+        
         if (result.length < 2 ) {
             noresult.style.display = 'block';
         }else {

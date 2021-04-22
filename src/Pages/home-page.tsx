@@ -9,6 +9,7 @@ class Homepage extends React.Component {
         
         return (
             <div className="Home-page">
+                
                 <div className="home-top">
                     <div className="home-page-image">
                         <div>

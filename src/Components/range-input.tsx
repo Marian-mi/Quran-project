@@ -26,7 +26,6 @@ export default class Rangeinput extends React.Component<props, state> {
         }
     }
 
-    ayeContainer = document.querySelector('#root')!
         mutrationCallback: MutationCallback = entry => {
             if( entry[0].type === 'childList') {
                 let ayeTexts = document.querySelectorAll<HTMLParagraphElement>('.ayeitself')!;
@@ -40,7 +39,8 @@ export default class Rangeinput extends React.Component<props, state> {
         observer = new MutationObserver(this.mutrationCallback);
 
     componentDidMount () {
-        this.observer.observe(this.ayeContainer, {
+        const ayeContainer = document.querySelector('.aye-container')!
+        this.observer.observe(ayeContainer, {
             childList: true
         })
     }

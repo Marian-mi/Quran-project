@@ -1,4 +1,5 @@
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { faPauseCircle } from '@fortawesome/free-regular-svg-icons';
 import {  faPlayCircle, faTimes, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
@@ -21,6 +22,11 @@ export default class Audioplayer extends React.Component<props , state> {
             playsate : faPlayCircle,
             mutestate: faVolumeUp
         }
+    }
+
+    changeicon = (state: string) => {
+        let currentState = state === 'pause'? faPauseCircle: faPlayCircle;
+        this.setState({playsate: currentState});
     }
 
     componentDidUpdate() {
@@ -196,16 +202,19 @@ export default class Audioplayer extends React.Component<props , state> {
                 playState = 'pause';
                 cancelAnimationFrame(raf);
                 requestAnimationFrame(whilePlaying);
+                this.changeicon('pause');
                 return
             }
             if(playState === 'play') {
                 currentAudio.play();              
                 requestAnimationFrame(whilePlaying);
                 playState = 'pause';
+                this.changeicon('pause');
             } else {
                 currentAudio.pause();
                 cancelAnimationFrame(raf);
                 playState = 'play';
+                this.changeicon('play');
             }
         }
 

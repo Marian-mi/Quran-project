@@ -1,4 +1,4 @@
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faArrowAltCircleDown, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { FormEvent } from 'react';
 import '../scss/setting.scss';
@@ -28,14 +28,14 @@ export default class Setting extends React.Component{
         const openSettingBody = (item: string, iconindex: number) => {
             const settingBody = document.querySelector(`.${item}`) as HTMLDivElement;
             const bodyHeight = settingBody.scrollHeight;
-            const icon = document.querySelector(`.body-headers-icon${iconindex}`)!;
+            const icon = document.querySelector(`.body-headers-icon${iconindex}`)! as SVGElement;
             settingBody.classList.toggle('setting-open');           
             if( settingBody.classList.contains('setting-open') ) {
-                settingBody.style.height = `${bodyHeight}px`; 
-                icon.innerHTML= "-";
+                settingBody.style.height = `${bodyHeight}px`;
+                icon.style.transform = 'translateY(-50%) rotate(180deg)'; 
             }else {
-                settingBody.style.height = `0px`;
-                icon.innerHTML= "+";
+                settingBody.style.height = `0px`; 
+                icon.style.transform = 'translateY(-50%) rotate(0)';
             }         
         }
 
@@ -52,7 +52,7 @@ export default class Setting extends React.Component{
                 </div>
                 <div className="setting-body-container">
                     <div onClick={() => {openSettingBody('setting-body', 1)}} className="body-headers">تنظیمات سایز فونت
-                        <div className="body-headers-icon1">+</div>
+                        <div><FontAwesomeIcon  className="body-headers-icon1" icon={faArrowAltCircleDown}/></div>
                     </div>
                     <div className="setting-body">
                         <Rangeinput defaultValue="35" inputName="ayeFontSize" maincontainerClass="setting-body1"
@@ -62,7 +62,7 @@ export default class Setting extends React.Component{
                         text="ترجمه" localstogrageKey="tarjomeFont" changesOutputid="tarjoemCurrentAmount"/>
                     </div>
                     <div onClick={() => {openSettingBody('qari-options', 2)}} className="body-headers">تنظیمات قاری
-                        <div className="body-headers-icon2">+</div>
+                        <div><FontAwesomeIcon className="body-headers-icon2" icon={faArrowAltCircleDown}/></div>
                     </div>
                     <div className="qari-options">
                         <div>

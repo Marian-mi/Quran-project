@@ -7,9 +7,9 @@ import { faArrowCircleUp, faChevronCircleLeft, faCog, faCopy, faPlayCircle, faSh
 import logo from '../assets/images/bismillah.png';
 import tarjomeAnsarian from  '../assets/ts/tarjomeh/fa.ansarian';
 import { Link } from 'react-router-dom';
-import Audioplayer from '../Components/audioPlayer';
 import ErrorBoundary from '../Components/error-boundary';
-const Setting = lazy(() => import('../Components/settings'));
+import Setting from '../Components/settings';
+const Audioplayer = lazy(()=> import('../Components/audioPlayer'));
 
 declare module 'react' {
     interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {

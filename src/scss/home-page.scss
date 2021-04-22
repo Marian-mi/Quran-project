@@ -170,6 +170,26 @@ html, body, #root {
   right: 25px;
   direction: rtl;
 }
+.spinner {
+  width: 10%;
+  margin: 200px auto;
+  transform: rotate(0);
+  height: 60px;
+  svg {
+    font-size: 50px;
+    animation-name: spinners;
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    color: rgba(3, 128, 90, 0.774);
+  }
+ 
+  
+}
+@keyframes spinners {
+  0% {transform: rotate(0);}
+  100%{transform: rotate(360deg); }
+}
 
 @media (max-height: 600px) {
   .felxItem {
