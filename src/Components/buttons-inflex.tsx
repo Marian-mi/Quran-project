@@ -13,7 +13,7 @@ class buttonInflex extends React.Component<fprop> {
     render () {
         return ( 
             <div className={this.props.class} ayeno={this.props.ayeNumber} sooreno={this.props.sooreNo} id={this.props.id as string}>
-                {this.props.icon}
+                <div>{this.props.icon}</div>
                 <p>
                     {this.props.textData}
                 </p>

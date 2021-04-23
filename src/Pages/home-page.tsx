@@ -19,11 +19,10 @@ class Homepage extends React.Component {
                     </div> 
                     <div className="bannerContainer">
                         <div className="homeCover">
-                            <h1>The Noble Quran</h1>
-                            <p>
-                            Lorem ipsum dolor sit amet, 
-                            consectetuer adipiscing elit. Aenean commodo                           
-                            </p>
+                            <div className="homeCover-text">
+                               <h1>The Noble Quran</h1>
+                              
+                            </div>
                             <SearchField />
                         </div>
                         <div  className="quran-font-image"></div>

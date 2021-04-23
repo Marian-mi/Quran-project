@@ -1,33 +1,14 @@
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faPauseCircle } from '@fortawesome/free-regular-svg-icons';
-import {  faPlayCircle, faTimes, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import '../scss/audioPlayer.scss';
+import AudioIcons from './audioPlayer-icons'
 
 type props = {
     soreNumber: number;
     ayatCount: number;
 }
-type state = {
-    playsate: IconProp;
-    mutestate: IconProp;
-}
 
-export default class Audioplayer extends React.Component<props , state> {
 
-    constructor(props: props) {
-        super(props)
-        this.state = {
-            playsate : faPlayCircle,
-            mutestate: faVolumeUp
-        }
-    }
-
-    changeicon = (state: string) => {
-        let currentState = state === 'pause'? faPauseCircle: faPlayCircle;
-        this.setState({playsate: currentState});
-    }
+export default class Audioplayer extends React.Component<props> {
 
     componentDidUpdate() {
         const playIconContainer = document.getElementById('play-icon')! as HTMLDivElement;
@@ -75,7 +56,7 @@ export default class Audioplayer extends React.Component<props , state> {
                 const target = e.target! as HTMLDivElement;
                 let aye = +(target.getAttribute('ayeno') as string)
                 const parentDiv = target.parentElement;
-                const mainDiv = parentDiv!.parentElement!;
+                const mainDiv = parentDiv!.parentElement!.parentElement!.parentElement!;
                 audio.onabort = audioAboutHandler(mainDiv);
                 const mainDivIndex = Array.prototype.indexOf.call(ayeContainerChildren, mainDiv);
                 audioPlayerContainer.style.display= 'block';
@@ -94,8 +75,9 @@ export default class Audioplayer extends React.Component<props , state> {
             if(currentAye > this.props.ayatCount) {
                 return
             }
-            
+           
             currentAudio = audio;
+           
             if (currentAudio.readyState > 0) {
                 displayDuration();
                 setSliderMax();
@@ -128,6 +110,7 @@ export default class Audioplayer extends React.Component<props , state> {
             if(currentAye > this.props.ayatCount) {
                 return
             }
+            
             
             currentAudio = audio1;
             
@@ -202,19 +185,16 @@ export default class Audioplayer extends React.Component<props , state> {
                 playState = 'pause';
                 cancelAnimationFrame(raf);
                 requestAnimationFrame(whilePlaying);
-                this.changeicon('pause');
                 return
             }
             if(playState === 'play') {
                 currentAudio.play();              
                 requestAnimationFrame(whilePlaying);
                 playState = 'pause';
-                this.changeicon('pause');
             } else {
                 currentAudio.pause();
                 cancelAnimationFrame(raf);
                 playState = 'play';
-                this.changeicon('play');
             }
         }
 
@@ -256,6 +236,8 @@ export default class Audioplayer extends React.Component<props , state> {
         const displayDuration = () => {
             durationContainer.textContent = calculateTime(currentAudio!.duration);
         }
+        
+        
 
         const setSliderMax = () => {
             seekSlider.max = Math.floor(currentAudio!.duration).toString();
@@ -286,11 +268,7 @@ export default class Audioplayer extends React.Component<props , state> {
             if(!currentAudio.paused) {
                 requestAnimationFrame(whilePlaying);
             }
-        });
-
-      
-        
-        
+        });      
     }
 
     render () {
@@ -300,11 +278,7 @@ export default class Audioplayer extends React.Component<props , state> {
                 <audio src="https://audio.qurancdn.com/Alafasy/mp3/001002.mp3" preload="metadata" id="audioPlayer"></audio>
                 <audio src="" preload="metadata" id="audioPlayer1"></audio>
                 <div className="audio-icons-container">                 
-                    <div id="icons12">
-                        <FontAwesomeIcon icon={faTimes} id="close-icon"/>
-                        <FontAwesomeIcon icon={this.state.playsate} id="play-icon"/>
-                        <FontAwesomeIcon icon={this.state.mutestate} id="muteicon" />                  
-                    </div>                  
+                    <AudioIcons playState='pause'/>                 
                 </div>
                 <div>
                     <span id="current-time" className="time">0:00</span>

@@ -118,7 +118,7 @@ export default function Search () {
                 if ( entries[0].isIntersecting ) {
                     itemMaker();
                 }
-            }, {threshold: 1});
+            }, {threshold: 0.5});
             observer.observe(lastnode)
             return () => {
                 observer.disconnect();

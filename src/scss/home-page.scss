@@ -62,19 +62,18 @@ html, body, #root {
   background-color: rgba(128, 128, 128, 0.397);
   z-index: 200;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-  h1, p {
+  h1{
     position: relative;
-    height: 10%;
-    top: 25%;
-    padding: 0 20px;
-    color: rgb(54, 54, 54);
+    height: 60px;
+    @include centeredtop();
+    top: 60%;
+    font-size: 50px;
+    color: rgba(52, 85, 60, 0.795);
   }
-  p {
-    height: 30%;
-    margin-top: 20px;
-    font-size: 18px;
-    font-weight: 700;
-  }
+}
+.homeCover-text {
+  text-align: center;
+  height: 65%;
 }
 .home-middle {
   height: 15%;
@@ -108,8 +107,7 @@ html, body, #root {
 }
 .searchContainer {
   position: relative;
-  top: 15%;
-  height: 35%;
+  height: 30% !important;
   width: 100%;
   z-index: 200;
   padding: 0 10px;
@@ -192,17 +190,6 @@ html, body, #root {
 }
 
 @media (max-height: 600px) {
-  .felxItem {
-    p {
-      top: 40%;
-    }
-    svg {
-      bottom: -30px;
-    }
-  }
-  .searchContainer {
-    top: 25%;
-  }
   .homeCover {
     h1 {
       font-size: 28px;
@@ -222,5 +209,11 @@ html, body, #root {
   }
   .home-middle {
     height: 15%;
+  }
+  .homeCover {
+    h1 {
+      font-size: 30px;
+    }
+    
   }
 }

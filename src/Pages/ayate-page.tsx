@@ -8,8 +8,8 @@ import logo from '../assets/images/bismillah.png';
 import tarjomeAnsarian from  '../assets/ts/tarjomeh/fa.ansarian';
 import { Link } from 'react-router-dom';
 import ErrorBoundary from '../Components/error-boundary';
-import Setting from '../Components/settings';
-const Audioplayer = lazy(()=> import('../Components/audioPlayer'));
+import Audioplayer from '../Components/audioPlayer'
+const Setting = lazy(() => import('../Components/settings'));
 
 declare module 'react' {
     interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
@@ -85,9 +85,11 @@ export default class ayatePage extends React.Component<props, state> {
         return <div
             className="aye-text"                       
             key={item[0][2] + index.toString()} >  
-            <p className="ayeText ayeitself">{item[index]}</p>
-            <p className="ayeText ayeTarjome">{tarjomeAnsarian[this.start + count + index - 1]}</p>
-            {this.buttonMaker}
+            <div className="aye-texts-container">
+                <p className="ayeText ayeitself">{item[index]}</p>
+                <p className="ayeText ayeTarjome">{tarjomeAnsarian[this.start + count + index - 1]}</p>
+            </div>
+            <div className="aye-buttons-container"> {this.buttonMaker} </div>
         </div>
     }
 
