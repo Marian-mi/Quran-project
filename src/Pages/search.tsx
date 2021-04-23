@@ -29,10 +29,7 @@ export default function Search () {
            
         }, 500);
     }
-    useEffect(()=> {
-        const noresult = document.querySelector('#noResult')! as HTMLDivElement;
-        noresult.style.display = 'none';
-    },[])
+    
     useEffect(() => {
         const noresult = document.querySelector('#noResult')! as HTMLDivElement;
         const result = [{item: 'none', index: 3, cnt: 0, start: 0, end: 0, ayeName: 'g'}];
@@ -123,6 +120,7 @@ export default function Search () {
             return () => {
                 observer.disconnect();
             }
+            
         //eslint-disable-next-line
     },[displayedResults] )
 

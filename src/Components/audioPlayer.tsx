@@ -31,21 +31,12 @@ export default class Audioplayer extends React.Component<props> {
 
 
         if (localStorage.getItem('qariName')) {
-            Qari = localStorage.getItem('qariName') as string;
+            let value = localStorage.getItem('qariName')!;
+            audioType = value.slice(value.length-3, value.length);
+            Qari = value.slice(0, value.length-3);
         }else {
             Qari = 'Alafasy';
-        }
-
-        if( Qari === 'Alafasy' ) {
-            audioType = 'mp3';
-        }
-        if( Qari === 'Minshawi' ) {
-            audioType = 'mp3';
-            Qari = 'Minshawi/Mujawwad';
-        }
-        if ( Qari === 'Husary' ) {
-            Qari = 'Husary/Mujawwad';
-            audioType = 'ogg'
+            audioType ='mp3'
         }
 
  

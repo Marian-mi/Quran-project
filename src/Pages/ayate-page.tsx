@@ -94,7 +94,6 @@ export default class ayatePage extends React.Component<props, state> {
     }
 
     observerCallback = () => {
-        console.log(this.sorreno)
         let index = this.state.ayeCounter;
         let arr = [];
         let item: string[] = []
@@ -121,9 +120,8 @@ export default class ayatePage extends React.Component<props, state> {
         console.log('yes this function ever gets called')
         const copyAlert = document.querySelector('.copied')! as HTMLDivElement;
         const target = e.target! as HTMLDivElement
-        const parent = target.parentElement!;
-        const pparent = parent.parentElement!;
-        const theTarget = pparent.children[0]!;
+        const parent = target.parentElement!.parentElement!.parentElement!.parentElement!;
+        const theTarget = parent.children[0]!.children[0]!;
         var r = document.createRange();
         r.selectNode(theTarget);
         window.getSelection()?.removeAllRanges();
@@ -159,7 +157,6 @@ export default class ayatePage extends React.Component<props, state> {
         const playButtons = document.querySelectorAll('.playButton')!;
         let sorreno = this.props.location.state.sooreNumber;
         if( !this.props.location.state.isComingFromSearch ) {
-            console.log('nooo')
 
             playButtons.forEach((item, index) => {
                 if(sorreno === 1) {
@@ -172,7 +169,6 @@ export default class ayatePage extends React.Component<props, state> {
                    
             playButtons.forEach((item, index) => {
                 let startAye = (this.props.location.state.scrolltoAye) + index;
-                console.log(startAye)
                 if(sorreno === 1) {
                     item.setAttribute('ayeno', (startAye).toString())
                 }else {              
@@ -287,6 +283,7 @@ export default class ayatePage extends React.Component<props, state> {
                 
                     <img src={logo} alt="Bismillah"/>
                     {this.state.ayat}
+                    
                     
                 </div>
                 <div className="scrollTop"><FontAwesomeIcon icon={faArrowCircleUp} onClick={scrollToTop} /></div>

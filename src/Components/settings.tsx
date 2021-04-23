@@ -11,7 +11,6 @@ export default class Setting extends React.Component{
 
     render() {
         const closeSetting = (e: React.MouseEvent) => {
-            console.log('hi')
             const settingContainer = document.querySelector('.setting-container')! as HTMLDivElement;
             settingContainer.classList.remove('settingOpen')           
         }
@@ -68,9 +67,13 @@ export default class Setting extends React.Component{
                         <div>
                             <form >
                                 <select name="qari-name" id="qariname">
-                                    <option value="Alafasy">العفاسی</option>
-                                    <option value="Husary">خلیل‌الحصری</option>
-                                    <option value="Minshawi">منشاوی</option>
+                                    <option value="AbdulBaset/Mujawwadmp3">عبدلباسط (مجوّد)</option>
+                                    <option value="AbdulBaset/Murattalmp3">عبدلباسط (مرتّل)</option>
+                                    <option value="Alafasymp3">العفاسی</option>
+                                    <option value="Husary/Mujawwadogg">خلیل‌الحصری (مجوّد)</option>
+                                    <option value="Husary/Murattalogg">(مرتّل) خلیل‌الحصری</option>
+                                    <option value="Minshawi/Mujawwadmp3">(مجوّد) منشاوی</option>
+                                    <option value="Minshawi/Murattalmp3">(مرتّل) منشاوی</option>
                                 </select>
                                 <button id="qarisubmit" onClick={qariHandler}>ذخیره</button>
                             </form>

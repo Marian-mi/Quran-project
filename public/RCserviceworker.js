@@ -69,7 +69,6 @@ self.addEventListener('fetch', (e) => {
             }
             ).catch(
             async err => {
-                console.log(err);
                 let cache = await caches.open(cacheName);
                 let offlineRespond = await cache.match(e.request);
                 return offlineRespond;

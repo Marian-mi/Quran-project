@@ -20,7 +20,7 @@
 
       if('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./RCserviceworker.js').then(reg => console.log('registered')).catch (
+          navigator.serviceWorker.register('./RCserviceworker.js').catch (
             err => console.log(err)
           )
         })
