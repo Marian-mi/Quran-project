@@ -16,6 +16,7 @@ declare module 'react' {
       // extends React's HTMLAttributes
       ayeno?: number;
       sooreno?: number;
+      customvalue?: string;
     }
 }
 type props = {

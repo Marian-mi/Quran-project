@@ -1,6 +1,6 @@
 import { faArrowAltCircleDown, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { FormEvent } from 'react';
+import React from 'react';
 import '../scss/setting.scss';
 import Rangeinput from '../Components/range-input';
 
@@ -8,21 +8,23 @@ import Rangeinput from '../Components/range-input';
 
 export default class Setting extends React.Component{
 
+    componentDidMount() {
+        const qariOptions = document.querySelectorAll<HTMLDivElement>('.qari-option')!
+        qariOptions.forEach( element => {
+            element.addEventListener('click', (e) => {
+                let target = e.target as HTMLDivElement;
+                let value = target.getAttribute('customvalue')!;
+                localStorage.setItem('qariName', value);
+            })
+        })
+    }
+
 
     render() {
         const closeSetting = (e: React.MouseEvent) => {
             const settingContainer = document.querySelector('.setting-container')! as HTMLDivElement;
             settingContainer.classList.remove('settingOpen')           
         }
-
-        const qariHandler = (e: FormEvent) => {
-            e.preventDefault();
-            const select = document.querySelector('#qariname')! as HTMLSelectElement;
-            const input = select.value;
-            localStorage.setItem('qariName', input);
-        }
-
-        
 
         const openSettingBody = (item: string, iconindex: number) => {
             const settingBody = document.querySelector(`.${item}`) as HTMLDivElement;
@@ -60,24 +62,23 @@ export default class Setting extends React.Component{
                         <Rangeinput defaultValue="26" inputName="tarjomeFontSize" maincontainerClass="setting-body1"
                         text="ترجمه" localstogrageKey="tarjomeFont" changesOutputid="tarjoemCurrentAmount"/>
                     </div>
-                    <div onClick={() => {openSettingBody('qari-options', 2)}} className="body-headers">تنظیمات قاری
+                    <div onClick={() => {openSettingBody('qari-select-container', 2)}} className="body-headers">تنظیمات قاری
                         <div><FontAwesomeIcon className="body-headers-icon2" icon={faArrowAltCircleDown}/></div>
                     </div>
-                    <div className="qari-options">
-                        <div>
-                            <form >
-                                <select name="qari-name" id="qariname">
-                                    <option value="AbdulBaset/Mujawwadmp3">عبدلباسط (مجوّد)</option>
-                                    <option value="AbdulBaset/Murattalmp3">عبدلباسط (مرتّل)</option>
-                                    <option value="Alafasymp3">العفاسی</option>
-                                    <option value="Husary/Mujawwadogg">خلیل‌الحصری (مجوّد)</option>
-                                    <option value="Husary/Murattalogg">(مرتّل) خلیل‌الحصری</option>
-                                    <option value="Minshawi/Mujawwadmp3">(مجوّد) منشاوی</option>
-                                    <option value="Minshawi/Murattalmp3">(مرتّل) منشاوی</option>
-                                </select>
-                                <button id="qarisubmit" onClick={qariHandler}>ذخیره</button>
-                            </form>
-                        </div>
+                    <div className="qari-select-container">
+                      
+                            <div className="Qari-select">
+                                <div className="qari-options-container">
+                                    <div className="qari-option" customvalue="AbdulBaset/Mujawwadmp3"><p>عبدلباسط</p> <span>مرتّل</span></div>
+                                    <div className="qari-option" customvalue="AbdulBaset/Murattalmp3"><p>عبدلباسط</p> <span>مجوّد</span></div>
+                                    <div className="qari-option" customvalue="Alafasymp3"><p>العفاسی</p></div>
+                                    <div className="qari-option" customvalue="Husary/Mujawwadogg"><p>خلیل‌الحصری</p> <span>مجوّد</span></div>
+                                    <div className="qari-option" customvalue="Husary/Murattalogg"><p>خلیل‌الحصری</p> <span>مرتّل</span></div>
+                                    <div className="qari-option" customvalue="Minshawi/Mujawwadmp3"><p>منشاوی</p> <span>مجوّد</span></div>
+                                    <div className="qari-option" customvalue="Minshawi/Murattalmp3"><p>منشاوی</p> <span>مرتّل</span></div>
+                                </div>
+                            </div>
+                        
                     </div>
                 </div>
             </div>
