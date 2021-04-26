@@ -8,7 +8,7 @@ class Homepage extends React.Component {
     render() {
         
         return (
-            <div className="Home-page">
+            <div className="Home-page" testid="home-page-container">
                 
                 <div className="home-top">
                     <div className="home-page-image">
@@ -33,7 +33,9 @@ class Homepage extends React.Component {
                     <div className="scrollSuggestion">
                         <p>Scroll down for more!</p>                
                     </div>
+                    <div className="home-page-bottom">
                     
+                    </div>
                 </div>
             </div>
         )

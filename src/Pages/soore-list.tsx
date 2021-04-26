@@ -26,7 +26,7 @@ export default class SooreListPage extends React.Component<props, state> {
 
     
     itemMaker = (i: number, item: (string | number)[][], Linkstyle: object, count: number) => {
-        if(item[i][4] !== undefined && item[i] !== undefined){
+        if(item[i][4] !== undefined ){
             return <Link style={Linkstyle} key={item[i][0]}
             to={{
                 pathname: `/Aye`,
@@ -51,12 +51,16 @@ export default class SooreListPage extends React.Component<props, state> {
 
     observerCallback = () => {
         let index = this.state.elementCounter;  
-        let arr = []
-        let item = Sura.Sura.slice((index), index + 14);
-        for (let i = 0; i <  10; i++) {
-            if( index + i > (Sura.Sura.length - 1)) { return }
+        let arr = [];
+        let j = 10; // number of elements to render on each call
+        if ( index === 110) {
+            j = 5;
+        }
+        let item = Sura.Sura.slice((index), index + 11);
+        for (let i = 0; i < j; i++) {
+            if( index + i > (Sura.Sura.length-1 )) { return }
             arr.push(this.itemMaker(i, item, {textDecoration: 'none'}, index))
-            if (i === 9) {this.stateUpdater(arr, index)}
+            if (i === j-1) {this.stateUpdater(arr, index)}
         }
     }
 
@@ -88,7 +92,7 @@ export default class SooreListPage extends React.Component<props, state> {
                 </div>
                 <div className="soore-list-container">
                     {this.state.Sura}
-                    <div id="lastnode">Loading...</div>
+                    <div id="lastnode"></div>
                 </div>
             </div>
         )

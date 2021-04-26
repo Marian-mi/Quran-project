@@ -17,6 +17,7 @@ declare module 'react' {
       ayeno?: number;
       sooreno?: number;
       customvalue?: string;
+      testid?: string;
     }
 }
 type props = {
@@ -51,6 +52,8 @@ export default class ayatePage extends React.Component<props, state> {
         }
     }
 
+        
+
     sorreno = this.props.location.state.sooreNumber;
     start = this.props.location.state.start;
     end = this.props.location.state.end;
@@ -77,7 +80,8 @@ export default class ayatePage extends React.Component<props, state> {
     })
 
     englishToarabic = (num: number) => {
-        const arabicNumbers = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+        if( this.sorreno === 1 ) {num--};
+        const arabicNumbers = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
         let spiltted = num.toString().split('');
         const arabicNumber = spiltted.map(item => {
             return arabicNumbers[+item];
@@ -92,16 +96,15 @@ export default class ayatePage extends React.Component<props, state> {
         if(index > item.length-1) {
             return;
         }
-        if( this.sorreno === 1 ) {
-            count--;
-        }
         return <div
             className="aye-text"                       
             key={item[0][2] + index.toString()} >  
             <div className="aye-texts-container">
                 <p className="ayeText ayeitself">
                     {item[index]}
-                    <span className="aye-index"><p>{this.englishToarabic(count+index+1)}</p></span>
+                    <span className="aye-index"><p>
+                        {this.englishToarabic(count+index+1)}
+                    </p></span>
                 </p>
                 <p className="ayeText ayeTarjome">{tarjomeAnsarian[this.start + count + index - 1]}</p>
             </div>
@@ -151,7 +154,8 @@ export default class ayatePage extends React.Component<props, state> {
     }
 
     componentDidMount() {
-        
+
+
         let ayeS = localStorage.getItem('ayeFont') as string;
         this.setState({ayeSize: ayeS});
         let tarjoemS = localStorage.getItem('tarjomeFont') as string;
@@ -168,7 +172,14 @@ export default class ayatePage extends React.Component<props, state> {
             item.style.fontSize = this.state.tarjoemSize;
         })
 
-        this.observerCallback();
+        let lastNode = document.querySelector('.aye-page-footer')!;
+        let observer = new IntersectionObserver(entry => {
+            if(entry[0].isIntersecting) {
+                this.observerCallback();
+            }
+        }, {threshold: 0.3});
+
+        observer.observe(lastNode);
 
         const playButtons = document.querySelectorAll('.playButton')!;
         let sorreno = this.props.location.state.sooreNumber;
@@ -219,14 +230,7 @@ export default class ayatePage extends React.Component<props, state> {
         })
         
 
-        let lastNode = document.querySelector('.aye-page-footer')!;
-        let observer = new IntersectionObserver(entry => {
-            if(entry[0].isIntersecting) {
-                this.observerCallback();
-            }
-        }, {threshold: 0.3});
-
-        observer.observe(lastNode);
+        
 
         const playButtons = document.querySelectorAll('.playButton')!;
         let sorreno = this.props.location.state.sooreNumber;
