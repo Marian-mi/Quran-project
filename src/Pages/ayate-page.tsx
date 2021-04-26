@@ -76,6 +76,15 @@ export default class ayatePage extends React.Component<props, state> {
         />
     })
 
+    englishToarabic = (num: number) => {
+        const arabicNumbers = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+        let spiltted = num.toString().split('');
+        const arabicNumber = spiltted.map(item => {
+            return arabicNumbers[+item];
+        })
+        return arabicNumber.join('');
+    }
+
     ayeMaker = (item: string[], index:number, count: number ) => {
         if (this.sorreno === 1 && index === 0 ) {
             return;    
@@ -83,11 +92,17 @@ export default class ayatePage extends React.Component<props, state> {
         if(index > item.length-1) {
             return;
         }
+        if( this.sorreno === 1 ) {
+            count--;
+        }
         return <div
             className="aye-text"                       
             key={item[0][2] + index.toString()} >  
             <div className="aye-texts-container">
-                <p className="ayeText ayeitself">{item[index]}</p>
+                <p className="ayeText ayeitself">
+                    {item[index]}
+                    <span className="aye-index"><p>{this.englishToarabic(count+index+1)}</p></span>
+                </p>
                 <p className="ayeText ayeTarjome">{tarjomeAnsarian[this.start + count + index - 1]}</p>
             </div>
             <div className="aye-buttons-container"> {this.buttonMaker} </div>

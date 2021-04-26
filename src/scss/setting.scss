@@ -139,6 +139,13 @@
             @include centeredtop();
             transition: 0.5s;
         }
+        svg {
+            position: absolute;
+            right: 10px;
+            @include centeredtop();
+            opacity: 0;
+            transition: 0.2s;
+        }
     }
     div:hover {
         background-color: $primary-color2;

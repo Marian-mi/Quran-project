@@ -30,6 +30,22 @@
     justify-content: center;
     transition: 0.3s;         
 }
+.aye-index {
+    font-size: 20px;
+    font-family: osmanTaha;
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-image: url(../assets/images/ayeNumber.png);
+    background-size: cover;
+    position: relative;
+    bottom: 10px;
+    p {
+        position: relative;
+        @include centeredtop();
+        top: 60%;
+    }
+}
 .copied {
     position: sticky;
     z-index: 1000;
