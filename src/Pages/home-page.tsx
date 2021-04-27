@@ -20,7 +20,7 @@ class Homepage extends React.Component {
                     <div className="bannerContainer">
                         <div className="homeCover">
                             <div className="homeCover-text">
-                               <h1>The Noble Quran</h1>
+                               <p>The Noble Quran</p>
                               
                             </div>
                             <SearchField />
@@ -32,9 +32,6 @@ class Homepage extends React.Component {
                                        
                     <div className="scrollSuggestion">
                         <p>Scroll down for more!</p>                
-                    </div>
-                    <div className="home-page-bottom">
-                    
                     </div>
                 </div>
             </div>

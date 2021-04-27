@@ -8,7 +8,7 @@ import logo from '../assets/images/bismillah.png';
 import tarjomeAnsarian from  '../assets/ts/tarjomeh/fa.ansarian';
 import { Link } from 'react-router-dom';
 import ErrorBoundary from '../Components/error-boundary';
-import Audioplayer from '../Components/audioPlayer'
+import Audioplayer from '../Components/audioPlayer';
 const Setting = lazy(() => import('../Components/settings'));
 
 declare module 'react' {
@@ -51,8 +51,7 @@ export default class ayatePage extends React.Component<props, state> {
             tarjoemSize: '26px'
         }
     }
-
-        
+    copyNotif = React.createRef<HTMLDivElement>();
 
     sorreno = this.props.location.state.sooreNumber;
     start = this.props.location.state.start;
@@ -66,7 +65,7 @@ export default class ayatePage extends React.Component<props, state> {
 
     buttonsData = [
         {textData: "Play", icon:<FontAwesomeIcon className="playButton" icon={faPlayCircle} />, id: 1},
-        {textData: "Copy", icon:<FontAwesomeIcon className="copyButton" icon={faCopy} />, id: 3},
+        {textData: "Copy", icon:<FontAwesomeIcon onClick={(e) => {this.copyFunction(e)}} className="copyButton" icon={faCopy} />, id: 3},
         {textData: "Share", icon:<FontAwesomeIcon icon={faShare} />, id: 4}
     ]
 
@@ -79,14 +78,14 @@ export default class ayatePage extends React.Component<props, state> {
         />
     })
 
-    englishToarabic = (num: number) => {
+    englishNumber_toPersian = (num: number) => {
         if( this.sorreno === 1 ) {num--};
-        const arabicNumbers = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+        const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
         let spiltted = num.toString().split('');
-        const arabicNumber = spiltted.map(item => {
-            return arabicNumbers[+item];
+        const persianNumber = spiltted.map(item => {
+            return persianDigits[+item];
         })
-        return arabicNumber.join('');
+        return persianNumber.join('');
     }
 
     ayeMaker = (item: string[], index:number, count: number ) => {
@@ -101,10 +100,19 @@ export default class ayatePage extends React.Component<props, state> {
             key={item[0][2] + index.toString()} >  
             <div className="aye-texts-container">
                 <p className="ayeText ayeitself">
+
                     {item[index]}
+
+                    {!this.props.location.state.isComingFromSearch && 
                     <span className="aye-index"><p>
-                        {this.englishToarabic(count+index+1)}
-                    </p></span>
+                    {this.englishNumber_toPersian(count + index + 1)}
+                    </p></span>}
+                    
+                    {this.props.location.state.isComingFromSearch && 
+                    <span className="aye-index"><p>
+                    {this.englishNumber_toPersian(this.props.location.state.scrolltoAye + count + index)}
+                    </p></span>}
+
                 </p>
                 <p className="ayeText ayeTarjome">{tarjomeAnsarian[this.start + count + index - 1]}</p>
             </div>
@@ -135,9 +143,8 @@ export default class ayatePage extends React.Component<props, state> {
         this.setState({ayeCounter: newCount, ayat: [...this.state.ayat,...arr]})
     }
 
-    copyFunction = (e: Event) => {
-        console.log('yes this function ever gets called')
-        const copyAlert = document.querySelector('.copied')! as HTMLDivElement;
+    copyFunction = (e: React.MouseEvent) => {
+        const copyAlert = this.copyNotif.current!;
         const target = e.target! as HTMLDivElement
         const parent = target.parentElement!.parentElement!.parentElement!.parentElement!;
         const theTarget = parent.children[0]!.children[0]!;
@@ -203,21 +210,11 @@ export default class ayatePage extends React.Component<props, state> {
                 }
             })
         }
-        const copyButtons = document.querySelectorAll('.copyButton')!;
-        console.log(copyButtons);
-        copyButtons.forEach(item => {
-            item.addEventListener('click', e => {
-                this.copyFunction(e)
-            })
-        })
+        
         window.scrollTo(0, 0);
     }
 
     componentDidUpdate() {
-        const copyButtons = document.querySelectorAll('.copyButton')!;
-        copyButtons.forEach(item => {
-            item.addEventListener('click', this.copyFunction)
-        })
 
         const ayetexts = document.querySelectorAll<HTMLParagraphElement>('.ayeitself')!
         const tarjometexts = document.querySelectorAll<HTMLParagraphElement>('.ayeTarjome')!
@@ -256,7 +253,18 @@ export default class ayatePage extends React.Component<props, state> {
         }
     }
 
-    
+    scrollToTop = () => {
+        window.scroll({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+        });
+    }
+
+    openSetting = (e: React.MouseEvent) => {
+        const settingContainer = document.querySelector('.setting-container')! as HTMLDivElement;
+        settingContainer.classList.add('settingOpen')
+    }
 
     
     render() {
@@ -268,21 +276,6 @@ export default class ayatePage extends React.Component<props, state> {
             totalAyats = this.AyeText.length;
         }
 
-
-        const scrollToTop = () => {
-            window.scroll({
-                top: 0,
-                left: 0,
-                behavior: 'smooth'
-            });
-        }
-        
-        const openSetting = (e: React.MouseEvent) => {
-            const settingContainer = document.querySelector('.setting-container')! as HTMLDivElement;
-            settingContainer.classList.add('settingOpen')
-        }
-
-       
         return (
             <div className="aye-main">
                 <Suspense fallback={<div>Loading...</div>}><Setting /></Suspense>
@@ -291,10 +284,10 @@ export default class ayatePage extends React.Component<props, state> {
                     <Link to="/" >
                         <FontAwesomeIcon icon={faChevronCircleLeft} className="backtohomeIcon" />
                     </Link>
-                    <div className="copied">
+                    <div className="copied" ref={this.copyNotif}>
                         <p>Copied to Clipboard!</p>
                     </div>
-                    <FontAwesomeIcon icon={faCog} onClick={openSetting} className="settingIcon"/>
+                    <FontAwesomeIcon icon={faCog} onClick={this.openSetting} className="settingIcon"/>
                     <p>
                     {this.props.location.state.ayeName}
                     </p>
@@ -306,7 +299,7 @@ export default class ayatePage extends React.Component<props, state> {
                     
                     
                 </div>
-                <div className="scrollTop"><FontAwesomeIcon icon={faArrowCircleUp} onClick={scrollToTop} /></div>
+                <div className="scrollTop"><FontAwesomeIcon icon={faArrowCircleUp} onClick={this.scrollToTop} /></div>
                 <div className="aye-page-footer">...</div>
                 <ErrorBoundary>
                     <Audioplayer soreNumber={this.props.location.state.sooreNumber} ayatCount={totalAyats}/>

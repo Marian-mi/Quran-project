@@ -2,7 +2,7 @@ import { faArrowAltCircleDown, faCheckCircle, faTimes } from '@fortawesome/free-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import '../scss/setting.scss';
-import Rangeinput from '../Components/range-input';
+import FontButtons from './font-buttons';
 
 
 
@@ -27,31 +27,30 @@ export default class Setting extends React.Component{
         })
     }
 
+    closeSetting = (e: React.MouseEvent) => {
+        const settingContainer = document.querySelector('.setting-container')! as HTMLDivElement;
+        settingContainer.classList.remove('settingOpen')           
+    }
+
+    openSettingBody = (item: string, iconindex: number) => {
+        const settingBody = document.querySelector(`.${item}`) as HTMLDivElement;
+        const bodyHeight = settingBody.scrollHeight;
+        const icon = document.querySelector(`.body-headers-icon${iconindex}`)! as SVGElement;
+        settingBody.classList.toggle('setting-open');           
+        if( settingBody.classList.contains('setting-open') ) {
+            settingBody.style.height = `${bodyHeight}px`;
+            icon.style.transform = 'translateY(-50%) rotate(180deg)'; 
+        }else {
+            settingBody.style.height = `0px`; 
+            icon.style.transform = 'translateY(-50%) rotate(0)';
+        }         
+    }
 
     render() {
-        const closeSetting = (e: React.MouseEvent) => {
-            const settingContainer = document.querySelector('.setting-container')! as HTMLDivElement;
-            settingContainer.classList.remove('settingOpen')           
-        }
-
-        const openSettingBody = (item: string, iconindex: number) => {
-            const settingBody = document.querySelector(`.${item}`) as HTMLDivElement;
-            const bodyHeight = settingBody.scrollHeight;
-            const icon = document.querySelector(`.body-headers-icon${iconindex}`)! as SVGElement;
-            settingBody.classList.toggle('setting-open');           
-            if( settingBody.classList.contains('setting-open') ) {
-                settingBody.style.height = `${bodyHeight}px`;
-                icon.style.transform = 'translateY(-50%) rotate(180deg)'; 
-            }else {
-                settingBody.style.height = `0px`; 
-                icon.style.transform = 'translateY(-50%) rotate(0)';
-            }         
-        }
-
         return (
             <div className="setting-container">
                 <div className="setting-headers">
-                    <div  onClick={closeSetting} className="closeicon" >
+                    <div  onClick={this.closeSetting} className="closeicon" >
                         <FontAwesomeIcon icon={faTimes}/>
                     </div>
                     <p>
@@ -60,27 +59,27 @@ export default class Setting extends React.Component{
                     
                 </div>
                 <div className="setting-body-container">
-                    <div onClick={() => {openSettingBody('setting-body', 1)}} className="body-headers">تنظیمات سایز فونت
+                    <div onClick={() => {this.openSettingBody('setting-body', 1)}} className="body-headers">تنظیمات سایز فونت
                         <div><FontAwesomeIcon  className="body-headers-icon1" icon={faArrowAltCircleDown}/></div>
                     </div>
                     <div className="setting-body">
-                        <Rangeinput defaultValue="35" inputName="ayeFontSize" maincontainerClass="setting-body1"
-                        localstogrageKey="ayeFont" text="عربی" changesOutputid= "ayeCurrentAmount"/>
+                        <FontButtons maincontainerClass="setting-body1"
+                        localstogrageKey="ayeFont" text="عربی" />
 
-                        <Rangeinput defaultValue="26" inputName="tarjomeFontSize" maincontainerClass="setting-body1"
-                        text="ترجمه" localstogrageKey="tarjomeFont" changesOutputid="tarjoemCurrentAmount"/>
+                        <FontButtons maincontainerClass="setting-body1"
+                        text="ترجمه" localstogrageKey="tarjomeFont"/>
                     </div>
-                    <div onClick={() => {openSettingBody('qari-select-container', 2)}} className="body-headers">تنظیمات قاری
+                    <div onClick={() => {this.openSettingBody('qari-select-container', 2)}} className="body-headers">تنظیمات قاری
                         <div><FontAwesomeIcon className="body-headers-icon2" icon={faArrowAltCircleDown}/></div>
                     </div>
                     <div className="qari-select-container">
                       
                             <div className="Qari-select">
                                 <div className="qari-options-container">
-                                    <div className="qari-option" customvalue="AbdulBaset/Mujawwadmp3">
+                                    <div className="qari-option" customvalue="AbdulBaset/Murattalmp3">
                                         <FontAwesomeIcon className="selected-qari" icon={faCheckCircle} /><p>عبدلباسط</p> <span>مرتّل</span>
                                     </div>
-                                    <div className="qari-option" customvalue="AbdulBaset/Murattalmp3">
+                                    <div className="qari-option" customvalue="AbdulBaset/Mujawwadmp3">
                                         <FontAwesomeIcon className="selected-qari" icon={faCheckCircle} /><p>عبدلباسط</p> <span>مجوّد</span>
                                     </div>
                                     <div className="qari-option" customvalue="Alafasymp3">

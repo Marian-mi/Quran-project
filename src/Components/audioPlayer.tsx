@@ -7,9 +7,8 @@ type props = {
     ayatCount: number;
 }
 
-
 export default class Audioplayer extends React.Component<props> {
-
+    
     componentDidUpdate() {
         const playIconContainer = document.getElementById('play-icon')! as HTMLDivElement;
         const audioPlayerContainer = document.querySelector('#audio-player-container')! as HTMLDivElement;
@@ -28,8 +27,8 @@ export default class Audioplayer extends React.Component<props> {
         let raf: any = null;
         let playState = 'play';
         let muteState = 'unmute'; let Qari: string; let audioType: string;
-
-
+    
+    
         if (localStorage.getItem('qariName')) {
             let value = localStorage.getItem('qariName')!;
             audioType = value.slice(value.length-3, value.length);
@@ -38,8 +37,8 @@ export default class Audioplayer extends React.Component<props> {
             Qari = 'Alafasy';
             audioType ='mp3'
         }
-
- 
+    
+    
         const playButtons = document.querySelectorAll('.playButton')!;
         let sorreno = this.props.soreNumber;
         playButtons.forEach(item => {
@@ -59,9 +58,9 @@ export default class Audioplayer extends React.Component<props> {
                 autoplayHandler(aye, sorreno, mainDivIndex);           
             })
         })
-
+    
         
-
+    
         const autoplayHandler = (currentAye: number, currentSoore: number, index:number) => {
             if(currentAye > this.props.ayatCount) {
                 return
@@ -92,17 +91,15 @@ export default class Audioplayer extends React.Component<props> {
                 autoplayHandler1(currentAye, currentSoore, index);             
             };
         }
-
-
+    
+    
         
-
-
+    
+    
         const autoplayHandler1 = (currentAye: number, currentSoore: number, index: number) => {
             if(currentAye > this.props.ayatCount) {
                 return
             }
-            
-            
             currentAudio = audio1;
             
             if (currentAudio!.readyState > 0) {
@@ -128,7 +125,7 @@ export default class Audioplayer extends React.Component<props> {
                 autoplayHandler(currentAye, currentSoore, index)
             };
         }
-
+    
         const addPadding = (currentAye: number, currentSoore: number) => {
             let result = {
                 aye:  currentAye.toString().padStart(3, '0'),
@@ -136,7 +133,7 @@ export default class Audioplayer extends React.Component<props> {
             }
             return result;
         }
-
+    
         const autoScroller = (element: HTMLElement) => {
             let y = element.offsetTop - 100;
             window.scroll({
@@ -146,7 +143,7 @@ export default class Audioplayer extends React.Component<props> {
             });
         }
         
-
+    
         closeIcon.addEventListener('click', e => {
             audioPlayerContainer.style.opacity = '0';
             audio.setAttribute('src', '');
@@ -160,7 +157,7 @@ export default class Audioplayer extends React.Component<props> {
                 
             }, 500);
         })
-
+    
         const audioAboutHandler = (parent: HTMLElement): any => {
             
             textContainers.forEach((item) => {
@@ -169,7 +166,7 @@ export default class Audioplayer extends React.Component<props> {
                 }
             })
         }
-
+    
         const playHandler = (e?: MouseEvent, isnew?: boolean) => {
             if(isnew) {
                 currentAudio.play();
@@ -188,72 +185,74 @@ export default class Audioplayer extends React.Component<props> {
                 playState = 'play';
             }
         }
-
+    
         playIconContainer.addEventListener('click', playHandler);
-
+    
         
-
+    
         muteIconContainer.addEventListener('click', () => {
             if(muteState === 'unmute') {
-                currentAudio.muted = true;
+                audio.muted = true;
+                audio1.muted = true;
                 muteState = 'mute';
             } else {
-                currentAudio.muted = false;
+                audio.muted = false;
+                audio1.muted = false;
                 muteState = 'unmute';
             }
         });
-
+    
         const showRangeProgress = (rangeInput: HTMLInputElement) => {
             if(rangeInput === seekSlider) audioPlayerContainer!.style.setProperty('--seek-before-width', +rangeInput.value / +rangeInput.max * 100 + '%');
             else audioPlayerContainer!.style.setProperty('--volume-before-width', +rangeInput.value / +rangeInput.max * 100 + '%');
         }
-
+    
         seekSlider.addEventListener('input', e => {
             const target = e.target! as HTMLInputElement
             showRangeProgress(target);
         })
        
-
-
+    
+    
         
-
+    
         const calculateTime = (secs: number) => {
             const minutes = Math.floor(secs / 60);
             const seconds = Math.floor(secs % 60);
             const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
             return `${minutes}:${returnedSeconds}`;
         }
-
+    
         const displayDuration = () => {
             durationContainer.textContent = calculateTime(currentAudio!.duration);
         }
         
         
-
+    
         const setSliderMax = () => {
             seekSlider.max = Math.floor(currentAudio!.duration).toString();
         }
-
+    
         
-
+    
         const whilePlaying = () => {
             seekSlider.value = Math.floor(currentAudio!.currentTime).toString();
             currentTimeContainer.textContent = calculateTime(+seekSlider.value);
             audioPlayerContainer.style.setProperty('--seek-before-width', `${+seekSlider.value / +seekSlider.max * 100}%`);
             raf = requestAnimationFrame(whilePlaying);
         }
-
+    
         
     
-
-
+    
+    
         seekSlider.addEventListener('input', () => {
             currentTimeContainer.textContent = calculateTime(+seekSlider.value);
             if(!currentAudio.paused) {
                 cancelAnimationFrame(raf);
             }
         });
-
+    
         seekSlider.addEventListener('change', () => {
             currentAudio.currentTime = +seekSlider.value;
             if(!currentAudio.paused) {
@@ -262,14 +261,13 @@ export default class Audioplayer extends React.Component<props> {
         });      
     }
 
-    render () {
-
+    render() {
         return (
             <div id="audio-player-container">
-                <audio src="https://audio.qurancdn.com/Alafasy/mp3/001002.mp3" preload="metadata" id="audioPlayer"></audio>
+                <audio src="" preload="metadata" id="audioPlayer"></audio>
                 <audio src="" preload="metadata" id="audioPlayer1"></audio>
                 <div className="audio-icons-container">                 
-                    <AudioIcons playState='pause'/>                 
+                    <AudioIcons />                 
                 </div>
                 <div>
                     <span id="current-time" className="time">0:00</span>
@@ -280,3 +278,4 @@ export default class Audioplayer extends React.Component<props> {
         )
     }
 }
+

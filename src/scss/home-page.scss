@@ -36,9 +36,9 @@ html, body, #root {
   padding: 5px 10px;
   z-index: 300;
   position: relative;
-  box-shadow: 0 0 40px 4px white;
+  box-shadow: 0 0 30px 4px white;
   img {
-    height: 200px;
+    height: 200px; 
     border-radius: 50%;
     width: 240px;
     position: absolute;
@@ -75,14 +75,15 @@ html, body, #root {
   height: 100%;
   background-color: rgba(128, 128, 128, 0.397);
   z-index: 200;
-  h1{
+  p{
     position: relative;
     height: 60px;
     @include centeredtop();
     top: 70%;
-    font-family: cursive;
-    font-size: 50px;
-    color: rgba(27, 58, 31, 0.486);
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.685);
+    font-family: precious;
+    font-size: 90px;
+    color: rgba(77, 77, 77, 0.904);
   }
 }
 .homeCover-text {
@@ -96,15 +97,7 @@ html, body, #root {
   overflow: hidden;
 }
 
-.home-page-bottom {
-  position: absolute;
-  width: 45%;
-  @include centeredleft();
-  height: 180px;
-  background-color: rgba(128, 128, 128, 0.199);;
-  z-index: -1;
-  border-radius: 0 0 10px 10px;
-}
+
 
 .scrollSuggestion {
   width: 100%;
@@ -126,11 +119,9 @@ html, body, #root {
   span {
     position: absolute;
     @include centeredtop();
-    right: 40%;
     font-size: 20px;
     font-family: $font-farsi;
     color: rgba(255, 255, 255, 0.623);
-    word-spacing: 5px;
   }
 }
 .searchContainer {
@@ -194,18 +185,9 @@ html, body, #root {
   100%{transform: rotate(360deg); }
 }
 
-@media (max-height: 600px) {
-  .homeCover {
-    h1 {
-      font-size: 28px;
-    }
-    p {
-      font-size: 16px;
-    }
-  }
-}
 
-@media only screen and (max-width: 600px) {
+
+@media only screen and (max-width: 700px) {
   .home-page-image {
     img {
       width: 250px;
@@ -216,9 +198,12 @@ html, body, #root {
     height: 15%;
   }
   .homeCover {
-    h1 {
-      font-size: 30px;
+    p {
+      font-size: 70px;
     }
     
+  }
+  .home-page-bottom {
+    display: none;
   }
 }

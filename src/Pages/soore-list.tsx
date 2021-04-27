@@ -22,9 +22,8 @@ export default class SooreListPage extends React.Component<props, state> {
         }
     }
 
+    lastNode = React.createRef<HTMLDivElement>();
 
-
-    
     itemMaker = (i: number, item: (string | number)[][], Linkstyle: object, count: number) => {
         if(item[i][4] !== undefined ){
             return <Link style={Linkstyle} key={item[i][0]}
@@ -73,14 +72,18 @@ export default class SooreListPage extends React.Component<props, state> {
         this.observerCallback();
     }
 
+    observer = new IntersectionObserver((entry) => {
+        if (entry[0].isIntersecting ) {
+            this.observerCallback();
+        }
+    }, {threshold: 1})
+    
     componentDidUpdate() {
-        let lastNode = document.querySelector('#lastnode')!;
-        let observer = new IntersectionObserver((entry) => {
-            if (entry[0].isIntersecting ) {
-                this.observerCallback();
-            }
-        }, {threshold: 1})
-        observer.observe(lastNode);
+        this.observer.observe(this.lastNode.current!);
+    }
+
+    componentWillUnmount() {
+        this.observer.disconnect();
     }
 
     render() {
@@ -92,7 +95,7 @@ export default class SooreListPage extends React.Component<props, state> {
                 </div>
                 <div className="soore-list-container">
                     {this.state.Sura}
-                    <div id="lastnode"></div>
+                    <div ref={this.lastNode} id="lastnode"></div>
                 </div>
             </div>
         )

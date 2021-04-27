@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import {Qurantext} from '../assets/ts/quran-simple-plain';
 import Sura from '../assets/ts/quran-metadata';
 import { Link } from 'react-router-dom';
@@ -17,6 +17,7 @@ export default function Search () {
     const [elementsResults, setelementsResults] = useState<(JSX.Element | null)[]>();
     const [displayedResults, setDisplayedresults ] = useState<(JSX.Element | null)[]>();
     const [itemCount, setitemCount] = useState(0);
+    const noResult = useRef<HTMLDivElement>(null);
 
 
     const searchHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +32,6 @@ export default function Search () {
     }
     
     useEffect(() => {
-        const noresult = document.querySelector('#noResult')! as HTMLDivElement;
         const result = [{item: 'none', index: 3, cnt: 0, start: 0, end: 0, ayeName: 'g'}];
         if ( query.length > 3 ) {
             for ( let i = 0; i < Qurantext.length; i++) {
@@ -61,9 +61,9 @@ export default function Search () {
         setResults(result);
         
         if (result.length < 2 ) {
-            noresult.style.display = 'block';
+            noResult.current!.style.display = 'block'
         }else {
-            noresult.style.display = 'none';
+            noResult.current!.style.display = 'none'
         }
     }, [query]);
 
@@ -137,15 +137,15 @@ export default function Search () {
     return(
         <div id="search-container">
 
-                <input type="text" name="search" id="searchQuery" onChange={(e) => {searchHandler(e)}}
-                placeholder="با وارد کردن حداقل سه حرف جست و جو را شروع کنید" 
-                defaultValue="" autoComplete="off" ></input>
+            <input type="text" name="search" id="searchQuery" onChange={(e) => {searchHandler(e)}}
+            placeholder="با وارد کردن حداقل سه حرف جست و جو را شروع کنید" 
+            defaultValue="" autoComplete="off" ></input>
 
-                {displayedResults}
-                <div id="lastNode"></div>
-                <div id="noResult">
-                    <p>نتیجه ای یافت نشد</p>
-                </div>
+            {displayedResults}
+            <div id="lastNode"></div>
+            <div ref={noResult} id="noResult">
+                <p>نتیجه ای یافت نشد</p>
+            </div>
 
         </div>
     )

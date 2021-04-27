@@ -158,38 +158,25 @@
 
 
 .setting-body1 {
-    padding: 30px; 
+    padding: 20px 30px; 
     background-color: white;
     font-size: 20px;
     font-family: $font-farsi;
     font-weight: 500;
     color: $primary-color2;
     text-align: center;
-    
-    label {
-        direction: rtl;
-        margin-bottom: 30px;
-        display: block;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    transition: 0.5s;
+    > div {
+        width: 30%;
+        margin: auto;
     }
-    input[type=submit] {
-        width: 100px;
-        height: 30px;
-        margin-left: 30px;
-        position: relative;
-        bottom: 5px;
-        border: none;
-    }
-    input[type = range] {
-        background-color: rgba($color: $primary-color2, $alpha: 0.7);
-        height: 15px;
-        width: 120px;
-    }
-    #ayeCurrentAmount {       
-        display: inline;       
-    }
-    #tarjoemCurrentAmount {       
-        display: inline;       
-    }
+}
+.setting-body1:hover {
+    background-color: $primary-color2;
+    color: rgba(255, 255, 255, 0.705);
 }
 
 

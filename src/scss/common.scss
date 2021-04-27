@@ -17,6 +17,10 @@ $font-farsi: yekan;
   font-family: vaziri;
   src: url(../assets/fonts/vazir/Vazir-Medium-WOL.ttf);
 }
+@font-face {
+  font-family: precious;
+  src: url(../assets/fonts/Tangerine/Tangerine-Bold.ttf);
+}
 @mixin centeredboth {
   top: 50%;
   left: 50%;
