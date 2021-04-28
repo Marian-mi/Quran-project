@@ -80,7 +80,7 @@ html, body, #root {
     height: 60px;
     @include centeredtop();
     top: 70%;
-    text-shadow: 0 0 3px rgba(255, 255, 255, 0.685);
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.473);
     font-family: precious;
     font-size: 90px;
     color: rgba(77, 77, 77, 0.904);
@@ -177,8 +177,6 @@ html, body, #root {
     animation-timing-function: ease-in-out;
     color: rgba(3, 128, 90, 0.774);
   }
- 
-  
 }
 @keyframes spinners {
   0% {transform: rotate(0);}
@@ -190,8 +188,8 @@ html, body, #root {
 @media only screen and (max-width: 700px) {
   .home-page-image {
     img {
-      width: 250px;
-      height: 200px;
+      width: 200px;
+      height: 180px;
     }
   }
   .home-middle {
@@ -199,11 +197,14 @@ html, body, #root {
   }
   .homeCover {
     p {
-      font-size: 70px;
+      font-size: 60px;
     }
     
   }
   .home-page-bottom {
     display: none;
+  }
+  .searchContainer {
+    top: 10%;
   }
 }

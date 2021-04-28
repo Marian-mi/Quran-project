@@ -1,12 +1,15 @@
-import { faArrowAltCircleDown, faCheckCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faArrowAltCircleDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import '../scss/setting.scss';
 import FontButtons from './font-buttons';
+import QariList from './qari-list';
 
+type props = {
+    tarjomeSelection(index: number): void;
+}
 
-
-export default class Setting extends React.Component{
+export default class Setting extends React.Component<props>{
 
     componentDidMount() {
         const qariOptions = document.querySelectorAll<HTMLDivElement>('.qari-option')!
@@ -28,11 +31,13 @@ export default class Setting extends React.Component{
     }
 
     closeSetting = (e: React.MouseEvent) => {
-        const settingContainer = document.querySelector('.setting-container')! as HTMLDivElement;
-        settingContainer.classList.remove('settingOpen')           
+        if (e.target === e.currentTarget) {
+            const settingContainer = e.target as HTMLDivElement;
+            settingContainer.classList.remove('settingOpen')        
+        }   
     }
 
-    openSettingBody = (item: string, iconindex: number) => {
+    openSettingBody = (e: React.MouseEvent, item: string, iconindex: number) => {
         const settingBody = document.querySelector(`.${item}`) as HTMLDivElement;
         const bodyHeight = settingBody.scrollHeight;
         const icon = document.querySelector(`.body-headers-icon${iconindex}`)! as SVGElement;
@@ -46,20 +51,15 @@ export default class Setting extends React.Component{
         }         
     }
 
+    
     render() {
         return (
-            <div className="setting-container">
+            <div className="setting-container" onClick={this.closeSetting}>
                 <div className="setting-headers">
-                    <div  onClick={this.closeSetting} className="closeicon" >
-                        <FontAwesomeIcon icon={faTimes}/>
-                    </div>
-                    <p>
-                        تنظیمات
-                    </p>
-                    
+                    <p>تنظیمات</p>                   
                 </div>
                 <div className="setting-body-container">
-                    <div onClick={() => {this.openSettingBody('setting-body', 1)}} className="body-headers">تنظیمات سایز فونت
+                    <div onClick={(e) => {this.openSettingBody(e, 'setting-body', 1)}} className="body-headers">تنظیمات سایز فونت
                         <div><FontAwesomeIcon  className="body-headers-icon1" icon={faArrowAltCircleDown}/></div>
                     </div>
                     <div className="setting-body">
@@ -69,40 +69,27 @@ export default class Setting extends React.Component{
                         <FontButtons maincontainerClass="setting-body1"
                         text="ترجمه" localstogrageKey="tarjomeFont"/>
                     </div>
-                    <div onClick={() => {this.openSettingBody('qari-select-container', 2)}} className="body-headers">تنظیمات قاری
+                    <div onClick={(e) => {this.openSettingBody(e, 'qari-select-container', 2)}} className="body-headers">انتخاب قاری
                         <div><FontAwesomeIcon className="body-headers-icon2" icon={faArrowAltCircleDown}/></div>
                     </div>
-                    <div className="qari-select-container">
-                      
-                            <div className="Qari-select">
-                                <div className="qari-options-container">
-                                    <div className="qari-option" customvalue="AbdulBaset/Murattalmp3">
-                                        <FontAwesomeIcon className="selected-qari" icon={faCheckCircle} /><p>عبدلباسط</p> <span>مرتّل</span>
-                                    </div>
-                                    <div className="qari-option" customvalue="AbdulBaset/Mujawwadmp3">
-                                        <FontAwesomeIcon className="selected-qari" icon={faCheckCircle} /><p>عبدلباسط</p> <span>مجوّد</span>
-                                    </div>
-                                    <div className="qari-option" customvalue="Alafasymp3">
-                                        <FontAwesomeIcon className="selected-qari" icon={faCheckCircle} /><p>العفاسی</p>
-                                    </div>
-                                    <div className="qari-option" customvalue="Husary/Mujawwadogg">
-                                        <FontAwesomeIcon className="selected-qari" icon={faCheckCircle} /><p>خلیل‌الحصری</p> <span>مجوّد</span>
-                                    </div>
-                                    <div className="qari-option" customvalue="Husary/Murattalogg">
-                                        <FontAwesomeIcon className="selected-qari" icon={faCheckCircle} /><p>خلیل‌الحصری</p> <span>مرتّل</span>
-                                    </div>
-                                    <div className="qari-option" customvalue="Minshawi/Mujawwadmp3">
-                                        <FontAwesomeIcon className="selected-qari" icon={faCheckCircle} /><p>منشاوی</p> <span>مجوّد</span>
-                                    </div>
-                                    <div className="qari-option" customvalue="Minshawi/Murattalmp3">
-                                        <FontAwesomeIcon className="selected-qari" icon={faCheckCircle} /> <p>منشاوی</p> <span>مرتّل</span>
-                                    </div>
-                                </div>
-                            </div>
-                        
+                    <div className="qari-select-container">                     
+                        <div className="Qari-select">
+                            <QariList />
+                        </div>                       
+                    </div>
+                    <div onClick={(e) => {this.openSettingBody(e, 'tarjome-select-container', 3)}} className="body-headers">انتخاب ترجمه
+                        <div><FontAwesomeIcon className="body-headers-icon3" icon={faArrowAltCircleDown}/></div>
+                    </div>
+                    <div className="tarjome-select-container">
+                        <div onClick={() => {this.props.tarjomeSelection(0)}}><p>استاد انصاریان</p></div>
+                        <div onClick={() => {this.props.tarjomeSelection(1)}}><p>آیت الله مکارم شیرازی</p></div>
+                        <div onClick={() => {this.props.tarjomeSelection(2)}}><p>استاد ملکی</p></div>
                     </div>
                 </div>
+                
             </div>
         )
     }
 }
+
+

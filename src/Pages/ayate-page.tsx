@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowCircleUp, faChevronCircleLeft, faCog, faCopy, faPlayCircle, faShare } from '@fortawesome/free-solid-svg-icons';
 import logo from '../assets/images/bismillah.png';
 import tarjomeAnsarian from  '../assets/ts/tarjomeh/fa.ansarian';
+import tarjomeMaleki from  '../assets/ts/tarjomeh/fa.maleki';
+import tarjomeMakarem from  '../assets/ts/tarjomeh/fa.makarem';
 import { Link } from 'react-router-dom';
 import ErrorBoundary from '../Components/error-boundary';
 import Audioplayer from '../Components/audioPlayer';
@@ -38,6 +40,7 @@ type state = {
     ayat: any[];
     ayeSize: string;
     tarjoemSize: string;
+    selectedTarjome: string[];
 }
 
 export default class ayatePage extends React.Component<props, state> {
@@ -48,7 +51,8 @@ export default class ayatePage extends React.Component<props, state> {
             ayeCounter: 0,
             ayat: [],
             ayeSize: '35px',
-            tarjoemSize: '26px'
+            tarjoemSize: '26px',
+            selectedTarjome: tarjomeAnsarian
         }
     }
     copyNotif = React.createRef<HTMLDivElement>();
@@ -56,6 +60,8 @@ export default class ayatePage extends React.Component<props, state> {
     sorreno = this.props.location.state.sooreNumber;
     start = this.props.location.state.start;
     end = this.props.location.state.end;
+
+    tarjomeFiles = [tarjomeAnsarian, tarjomeMakarem, tarjomeMaleki];
 
     AyeText = Qurantext.filter((item, index) => {
         if(index >= this.start && index < this.end) {
@@ -78,6 +84,15 @@ export default class ayatePage extends React.Component<props, state> {
         />
     })
 
+    tarjomeSelection = (index: number) => {
+        this.setState((state) => ({
+            ayeCounter: 0,
+            ayat: [],
+            selectedTarjome: this.tarjomeFiles[index]
+        }))
+        localStorage.setItem('tarjomeFile', index.toString())
+    }
+
     englishNumber_toPersian = (num: number) => {
         if( this.sorreno === 1 ) {num--};
         const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
@@ -88,7 +103,7 @@ export default class ayatePage extends React.Component<props, state> {
         return persianNumber.join('');
     }
 
-    ayeMaker = (item: string[], index:number, count: number ) => {
+    ayeMaker = (item: string[], index:number, count: number) => {
         if (this.sorreno === 1 && index === 0 ) {
             return;    
         }
@@ -99,7 +114,7 @@ export default class ayatePage extends React.Component<props, state> {
             className="aye-text"                       
             key={item[0][2] + index.toString()} >  
             <div className="aye-texts-container">
-                <p className="ayeText ayeitself">
+                <div className="ayeText ayeitself">
 
                     {item[index]}
 
@@ -113,8 +128,8 @@ export default class ayatePage extends React.Component<props, state> {
                     {this.englishNumber_toPersian(this.props.location.state.scrolltoAye + count + index)}
                     </p></span>}
 
-                </p>
-                <p className="ayeText ayeTarjome">{tarjomeAnsarian[this.start + count + index - 1]}</p>
+                </div>
+                <p className="ayeText ayeTarjome">{this.state.selectedTarjome[this.start + count + index - 1]}</p>
             </div>
             <div className="aye-buttons-container"> {this.buttonMaker} </div>
         </div>
@@ -140,7 +155,10 @@ export default class ayatePage extends React.Component<props, state> {
 
     stateUpdater = (arr: any[], index: number) => {
         let newCount = index + 20;
-        this.setState({ayeCounter: newCount, ayat: [...this.state.ayat,...arr]})
+        this.setState({
+            ayeCounter: newCount,
+            ayat: [this.state.ayat,...arr]
+        })
     }
 
     copyFunction = (e: React.MouseEvent) => {
@@ -161,6 +179,13 @@ export default class ayatePage extends React.Component<props, state> {
     }
 
     componentDidMount() {
+
+        if (localStorage.getItem('tarjomeFile')) {
+            let index = +localStorage.getItem('tarjomeFile')!
+            this.setState({
+                selectedTarjome: this.tarjomeFiles[index]
+            })
+        }
 
 
         let ayeS = localStorage.getItem('ayeFont') as string;
@@ -278,7 +303,7 @@ export default class ayatePage extends React.Component<props, state> {
 
         return (
             <div className="aye-main">
-                <Suspense fallback={<div>Loading...</div>}><Setting /></Suspense>
+                <Suspense fallback={<div>Loading...</div>}><Setting tarjomeSelection={this.tarjomeSelection}/></Suspense>
                 <div className="aye-container">
                 <div className="aye-page-header">
                     <Link to="/" >
