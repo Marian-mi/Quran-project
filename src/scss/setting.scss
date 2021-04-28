@@ -68,7 +68,7 @@
     margin: 10px 0;
 }
 
-.body-headers-icon1, .body-headers-icon2 {
+.body-headers-icon1, .body-headers-icon2, .body-headers-icon3 {
     position: absolute;
     left: 40px;
     @include centeredtop();
@@ -77,6 +77,7 @@
     transition: 0.5s;
     height: 20px;
     text-align: center;
+    pointer-events: none;
     font-size: 40px;
 }
 
@@ -93,6 +94,41 @@
 .qari-select-container {
     @extend .setting-body;
     direction: rtl;   
+}
+.tarjome-select-container {
+    @extend .setting-body;
+    background-color: white;
+    display: flex;
+    div {
+        width: 33%;
+        font-family: $font-farsi;
+        color: $primary-color2;
+        font-size: 20px;
+        padding: 5px 0;
+        margin: auto;
+        height: 90px;
+        text-align: center;
+        position: relative;
+        transition: 0.5s;
+        cursor: pointer;
+        p {
+            position: absolute;
+            width: 90%;
+            left: 50%;
+            bottom: 50%;
+            transform: translate(-50%, 50%);
+        }
+    }
+    div:first-child {
+        border-right: 1px solid $primary-color2;
+    }
+    div:last-child {
+        border-left: 1px solid $primary-color2;
+    }
+    div:hover {
+        background-color: $primary-color2;
+        color: rgba(255, 255, 255, 0.705);
+    }
 }
 
 .Qari-select {
