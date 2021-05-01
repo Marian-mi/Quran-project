@@ -1,64 +1,62 @@
 @import 'common';
 @import 'inputRange';
 
-#audio-player-container {
-    --seek-before-width: 0%;
-    --volume-before-width: 100%;
-    --buffered-width: 0%;
+.audio-player-container {
     position: fixed;
-    width: 90%;
-    background-color: #838984;
-    display: none;
+    bottom: 10px;
     opacity: 0;
-    bottom: 5px;
-    height: 90px;    
-    z-index: 100;
-    text-align: center;
-    border-radius: 50px;
-    padding-top: 1%;
-    transition: 0.5s;
-    p {
-        display: block;
-        height: 20px;
-    }
-    div {
-        margin: 5px;
-    }
-    span, output {
-        color: white;
-        margin: 0 10px;
-        font-size: 18px;
-    }
-}
-
-#volume-slider {
-    width: 70px;
-}
-
-.audio-icons-container {
-    position: relative;
-    color: rgba(255, 255, 255, 0.699);
-    height: 40px;
-}
-
-#icons12 {
-    position: absolute;
+    display: none;
+    height: 90px;
+    transition: 1s;
+    background-color: rgba(116, 116, 116, 0.678);
+    width: 50%;
+    border-radius: 10px;
     @include centeredleft();
-    top: -10px;
-    font-size: 35px;
-    width: 100%;
-    div {
-        display: inline;
+    z-index: 1500;
+    .audio-control-buttons {
+        width: 50%;
+        margin: auto;
+        div {
+            width: 150px;
+            margin: 10px auto;
+        }
+        svg {
+            font-size: 20px;
+            color: rgba(116, 116, 116, 0.884);
+        }
+        button {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.788);
+            border: none;
+            border-radius: 50px;
+            margin: 0 5px;
+            box-shadow: 0 0 2px 0 white;
+            border: 1px ridge white;
+        }
+        button:hover {
+            opacity: 0.8;
+            cursor: pointer;
+        }
     }
-    svg {
-        margin: 0 20px;
+    .audio-input {
+        width: 85%;
+        margin: 10px auto;
+        input[type = range] {
+            width: 100%;
+        }
     }
 }
 
-@media only screen and (min-width: 900px) {
-    #audio-player-container {
-        width: 70%;
-    }
+.audio-close-icon {
+    position: absolute;
+    left: 10px;
+    font-size: 25px !important;
+    color: rgba(255, 255, 255, 0.767) !important;
 }
 
-
+@media only screen and (max-width: 700px) {
+    .audio-player-container {
+        width: 90%;
+    }
+}

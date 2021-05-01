@@ -7,11 +7,12 @@ import QariList from './qari-list';
 
 type props = {
     tarjomeSelection(index: number): void;
+    ayePageRerender(): void;
 }
 
 export default class Setting extends React.Component<props>{
 
-    componentDidMount() {
+    componentDidMount() { 
         const qariOptions = document.querySelectorAll<HTMLDivElement>('.qari-option')!
         qariOptions.forEach( element => {
             element.addEventListener('click', (e) => {

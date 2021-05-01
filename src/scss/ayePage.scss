@@ -178,7 +178,7 @@
     position: sticky;
     top: 0;
     border-top: 1px solid rgba(0, 0, 0, 0.705) ;
-    z-index: 10;
+    z-index: 200;
     p {
         position: absolute;
         @include centeredboth;
@@ -250,6 +250,21 @@ path {
         font-size: 50px;
         color: rgba(119, 71, 49, 0.856);
     }
+}
+
+.tarjome-toggle-button {
+    width: 150px;
+    height: 50px;
+    position: absolute;
+    border-radius: 4px; 
+    background: none;
+    border: 1px ridge rgba(0, 158, 137, 0.87);
+    border-top: none;
+    border-left: none;
+    color: rgba(36, 36, 36, 0.719);
+    font-family: $font-farsi;
+    font-size: 20px;
+    z-index: 100;
 }
 
 

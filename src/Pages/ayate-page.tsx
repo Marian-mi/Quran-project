@@ -10,7 +10,9 @@ import tarjomeMaleki from  '../assets/ts/tarjomeh/fa.maleki';
 import tarjomeMakarem from  '../assets/ts/tarjomeh/fa.makarem';
 import { Link } from 'react-router-dom';
 import ErrorBoundary from '../Components/error-boundary';
-import Audioplayer from '../Components/audioPlayer';
+import AudioPlayer from '../Components/AudioPlayer';
+
+
 const Setting = lazy(() => import('../Components/settings'));
 
 declare module 'react' {
@@ -41,7 +43,9 @@ type state = {
     ayeSize: string;
     tarjoemSize: string;
     selectedTarjome: string[];
+    currentAye: number;
 }
+
 
 export default class ayatePage extends React.Component<props, state> {
     
@@ -52,7 +56,8 @@ export default class ayatePage extends React.Component<props, state> {
             ayat: [],
             ayeSize: '35px',
             tarjoemSize: '26px',
-            selectedTarjome: tarjomeAnsarian
+            selectedTarjome: tarjomeAnsarian,
+            currentAye: 0,
         }
     }
     copyNotif = React.createRef<HTMLDivElement>();
@@ -69,12 +74,26 @@ export default class ayatePage extends React.Component<props, state> {
         }else return false;
     })
 
+    reRender = () => {
+        this.setState({
+            ayat: [],
+            ayeCounter: 0
+        })
+    }
+
+    
+
+
+    
+
+
     buttonsData = [
-        {textData: "Play", icon:<FontAwesomeIcon className="playButton" icon={faPlayCircle} />, id: 1},
+        {textData: "Play", icon:<FontAwesomeIcon  className="playButton" icon={faPlayCircle} />, id: 1},
         {textData: "Copy", icon:<FontAwesomeIcon onClick={(e) => {this.copyFunction(e)}} className="copyButton" icon={faCopy} />, id: 3},
         {textData: "Share", icon:<FontAwesomeIcon icon={faShare} />, id: 4}
     ]
 
+    
     buttonMaker = this.buttonsData.map((item) => {
         return <Buttons
             class="ayeButtons" 
@@ -139,7 +158,7 @@ export default class ayatePage extends React.Component<props, state> {
         let index = this.state.ayeCounter;
         let arr = [];
         let item: string[] = []
-        if( index > this.AyeText.length) {return};
+        if( index > this.AyeText.length) return;
         if(this.AyeText.length > 20) {
             item = this.AyeText.slice(index, index + 20)
         }else {
@@ -292,6 +311,8 @@ export default class ayatePage extends React.Component<props, state> {
     }
 
     
+
+    
     render() {
         let totalAyats
 
@@ -303,7 +324,9 @@ export default class ayatePage extends React.Component<props, state> {
 
         return (
             <div className="aye-main">
-                <Suspense fallback={<div>Loading...</div>}><Setting tarjomeSelection={this.tarjomeSelection}/></Suspense>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <Setting ayePageRerender={this.reRender} tarjomeSelection={this.tarjomeSelection}/>
+                </Suspense>
                 <div className="aye-container">
                 <div className="aye-page-header">
                     <Link to="/" >
@@ -320,15 +343,21 @@ export default class ayatePage extends React.Component<props, state> {
                 </div>
                 
                     <img src={logo} alt="Bismillah"/>
+                    
                     {this.state.ayat}
                     
                     
                 </div>
+                
                 <div className="scrollTop"><FontAwesomeIcon icon={faArrowCircleUp} onClick={this.scrollToTop} /></div>
-                <div className="aye-page-footer">...</div>
-                <ErrorBoundary>
-                    <Audioplayer soreNumber={this.props.location.state.sooreNumber} ayatCount={totalAyats}/>
-                </ErrorBoundary>
+                <div className="aye-page-footer">...</div>              
+                    <ErrorBoundary>
+                        <AudioPlayer 
+                        isComingFromSearch= {this.props.location.state.isComingFromSearch} 
+                        soreNumber={this.sorreno} totalAyats={totalAyats}
+                        startingAye={this.props.location.state.scrolltoAye}
+                        />                         
+                    </ErrorBoundary>             
             </div>
             
         )

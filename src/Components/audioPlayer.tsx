@@ -1,281 +1,285 @@
-import React from 'react';
-import '../scss/audioPlayer.scss';
-import AudioIcons from './audioPlayer-icons'
+import React, { useEffect, useRef, useState } from 'react';
+import AudioControls from './AudioButtons';
+import '../scss/audioPlayer.scss'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+
 
 type props = {
+    totalAyats: number;
     soreNumber: number;
-    ayatCount: number;
+    isComingFromSearch: boolean;
+    startingAye?: number;
 }
 
-export default class Audioplayer extends React.Component<props> {
+const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye}: props) => {
+
+    let qari = 'Alafasy'
+    let audioType = 'mp3'
+    if (localStorage.getItem('qariName')) {
+        let value = localStorage.getItem('qariName')!;
+        audioType = value.slice(value.length-3, value.length);
+        qari = value.slice(0, value.length-3);
+    }
+
+    let ayeDefault = 1;
+    if ( soreNumber === 1 ) ayeDefault = 0;
+
+    const mainContainer = useRef<HTMLDivElement>(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [trackIndex, setTrackIndex] = useState<number>(ayeDefault);
+    const [trackProgress, setTrackProgress] = useState(0);
     
-    componentDidUpdate() {
-        const playIconContainer = document.getElementById('play-icon')! as HTMLDivElement;
-        const audioPlayerContainer = document.querySelector('#audio-player-container')! as HTMLDivElement;
-        const seekSlider = document.querySelector('#seek-slider')! as HTMLInputElement;
-        const muteIconContainer = document.querySelector('#muteicon')!;
-        const closeIcon = document.querySelector('#close-icon')!;
-        const textContainers = document.querySelectorAll<HTMLDivElement>('.aye-text');
-        const ayeContainer = document.querySelector('.aye-container')! as HTMLDivElement;
-        const ayeContainerChildren = ayeContainer.children;
-        const audio = document.querySelector('#audioPlayer')! as HTMLAudioElement;
-        const audio1 = document.querySelector('#audioPlayer1')! as HTMLAudioElement;
-        const scrollTop = document.querySelector('.scrollTop')! as HTMLDivElement;
-        let currentAudio = audio;
-        const durationContainer = document.getElementById('duration')!;
-        const currentTimeContainer = document.getElementById('current-time')!;
-        let raf: any = null;
-        let playState = 'play';
-        let muteState = 'unmute'; let Qari: string; let audioType: string;
+    const [tracks, setTracks] = useState<string[]>(
+        []
+    );
+    const isReady = useRef<number>(1);
+
+    const audioSrc = tracks[trackIndex];
+    const audioSrc1 = tracks[trackIndex+1];
+
+    const audioRef = useRef(new Audio(audioSrc));
+    const audioRef1 = useRef(new Audio(audioSrc1));
+    const intervalRef = useRef(setInterval(()=>{},1000));
     
-    
-        if (localStorage.getItem('qariName')) {
-            let value = localStorage.getItem('qariName')!;
-            audioType = value.slice(value.length-3, value.length);
-            Qari = value.slice(0, value.length-3);
-        }else {
-            Qari = 'Alafasy';
-            audioType ='mp3'
+
+
+    useEffect(() => {
+        const track = [];
+        
+        for (let i = 1; i <= totalAyats; i++) {
+            let soore = soreNumber.toString().padStart(3, '0');
+            let aye = i.toString().padStart(3, '0');
+            let src =
+            `https://audio.qurancdn.com/${qari}/${audioType}/${soore}${aye}.${audioType}`;
+            track.push(src);
+        }
+
+        setTracks(track);
+
+        
+        if ( isReady.current === 3 ) {
+            audioRef.current.pause();
+            audioRef.current = new Audio(track[trackIndex]);
+            audioRef.current.play();
         }
     
-    
-        const playButtons = document.querySelectorAll('.playButton')!;
-        let sorreno = this.props.soreNumber;
+
+        //eslint-disable-next-line
+    }, [qari, totalAyats, soreNumber, audioType])
+
+    useEffect(() => {
+        const playButtons = document.querySelectorAll<HTMLDivElement>('.playButton')!;
+
+        const playAudio = (e: MouseEvent) => {
+            const target = e.target! as HTMLDivElement;
+            const value = target.getAttribute('ayeno')!;
+
+            setTrackIndex(+value-1);
+            displayAudioControls();
+        }
         playButtons.forEach(item => {
-            item.addEventListener('click', e => {
-                const target = e.target! as HTMLDivElement;
-                let aye = +(target.getAttribute('ayeno') as string)
-                const parentDiv = target.parentElement;
-                const mainDiv = parentDiv!.parentElement!.parentElement!.parentElement!;
-                audio.onabort = audioAboutHandler(mainDiv);
-                const mainDivIndex = Array.prototype.indexOf.call(ayeContainerChildren, mainDiv);
-                audioPlayerContainer.style.display= 'block';
-                audioPlayerContainer.style.opacity= '1';
-                scrollTop.style.bottom = "110px";              
-                playState = 'pause';
-                let linkAdditions = addPadding(aye, sorreno);
-                audio.setAttribute('src', `https://audio.qurancdn.com/${Qari}/${audioType}/${linkAdditions.soore}${linkAdditions.aye}.${audioType}`);
-                autoplayHandler(aye, sorreno, mainDivIndex);           
-            })
+            item.addEventListener('click', (e) => {playAudio(e)})
         })
-    
-        
-    
-        const autoplayHandler = (currentAye: number, currentSoore: number, index:number) => {
-            if(currentAye > this.props.ayatCount) {
-                return
-            }
-           
-            currentAudio = audio;
-           
-            if (currentAudio.readyState > 0) {
-                displayDuration();
-                setSliderMax();
-            } else {
-                currentAudio.addEventListener('loadedmetadata', () => {
-                displayDuration();
-                setSliderMax();
-            });}
-            let currentParent = ayeContainerChildren[index]! as HTMLDivElement;
-            currentParent.style.color = 'rgba(0, 126, 109, 0.76)';
-            autoScroller(currentParent); 
-            requestAnimationFrame(whilePlaying);         
-            currentAudio.play();                     
-            currentAye++;
-            index++;
-            let linkAdditions = addPadding(currentAye, currentSoore);
-            audio1.setAttribute('src', `https://audio.qurancdn.com/${Qari}/${audioType}/${linkAdditions.soore}${linkAdditions.aye}.${audioType}`);
-            currentAudio.onended = () => {
-                currentParent.style.color = 'rgba(34, 34, 34, 0.733)';
-                cancelAnimationFrame(raf);
-                autoplayHandler1(currentAye, currentSoore, index);             
-            };
-        }
-    
-    
-        
-    
-    
-        const autoplayHandler1 = (currentAye: number, currentSoore: number, index: number) => {
-            if(currentAye > this.props.ayatCount) {
-                return
-            }
-            currentAudio = audio1;
-            
-            if (currentAudio!.readyState > 0) {
-                displayDuration();
-                setSliderMax();
-            } else {
-                currentAudio!.addEventListener('loadedmetadata', () => {
-                displayDuration();
-                setSliderMax();
-            });}
-            let currentParent = ayeContainerChildren[index]! as HTMLDivElement;
-            currentParent.style.color = 'rgba(0, 126, 109, 0.76)';
-            autoScroller(currentParent);
-            requestAnimationFrame(whilePlaying);
-            currentAudio.play();               
-            currentAye++;
-            index++;
-            let linkAdditions = addPadding(currentAye, currentSoore);
-            audio.setAttribute('src', `https://audio.qurancdn.com/${Qari}/${audioType}/${linkAdditions.soore}${linkAdditions.aye}.${audioType}`);
-            currentAudio.onended = () => {
-                currentParent.style.color = 'rgba(34, 34, 34, 0.733)';
-                cancelAnimationFrame(raf);                
-                autoplayHandler(currentAye, currentSoore, index)
-            };
-        }
-    
-        const addPadding = (currentAye: number, currentSoore: number) => {
-            let result = {
-                aye:  currentAye.toString().padStart(3, '0'),
-                soore: currentSoore.toString().padStart(3, '0')
-            }
-            return result;
-        }
-    
-        const autoScroller = (element: HTMLElement) => {
-            let y = element.offsetTop - 100;
-            window.scroll({
-                top: y,
-                left: 0,
-                behavior: 'smooth'
-            });
-        }
-        
-    
-        closeIcon.addEventListener('click', e => {
-            audioPlayerContainer.style.opacity = '0';
-            audio.setAttribute('src', '');
-            audio1.setAttribute('src', '');
-            scrollTop.style.bottom = "30px"
-            textContainers.forEach((item) => {
-                item.style.color ='rgba(34, 34, 34, 0.733)';           
-            })          
-            setTimeout(() => {
-                audioPlayerContainer.style.display = 'none';
-                
-            }, 500);
-        })
-    
-        const audioAboutHandler = (parent: HTMLElement): any => {
-            
-            textContainers.forEach((item) => {
-                if (item !== parent) {
-                    item.style.color ='rgba(34, 34, 34, 0.733)';
-                }
+
+        return () => {
+            playButtons.forEach(item => {
+                item.removeEventListener('click', (e) => {playAudio(e)})
             })
         }
-    
-        const playHandler = (e?: MouseEvent, isnew?: boolean) => {
-            if(isnew) {
-                currentAudio.play();
-                playState = 'pause';
-                cancelAnimationFrame(raf);
-                requestAnimationFrame(whilePlaying);
-                return
-            }
-            if(playState === 'play') {
-                currentAudio.play();              
-                requestAnimationFrame(whilePlaying);
-                playState = 'pause';
-            } else {
-                currentAudio.pause();
-                cancelAnimationFrame(raf);
-                playState = 'play';
-            }
+    })
+
+    const displayAudioControls = () => {
+
+        if ( mainContainer.current !== null ) {
+            setTimeout(() => {      
+                mainContainer.current!.style.display = 'block';
+                mainContainer.current!.style.opacity = '1';
+            }, 100);
         }
+
+    }
     
-        playIconContainer.addEventListener('click', playHandler);
-    
-        
-    
-        muteIconContainer.addEventListener('click', () => {
-            if(muteState === 'unmute') {
-                audio.muted = true;
-                audio1.muted = true;
-                muteState = 'mute';
-            } else {
-                audio.muted = false;
-                audio1.muted = false;
-                muteState = 'unmute';
-            }
-        });
-    
-        const showRangeProgress = (rangeInput: HTMLInputElement) => {
-            if(rangeInput === seekSlider) audioPlayerContainer!.style.setProperty('--seek-before-width', +rangeInput.value / +rangeInput.max * 100 + '%');
-            else audioPlayerContainer!.style.setProperty('--volume-before-width', +rangeInput.value / +rangeInput.max * 100 + '%');
+
+    const { duration } = audioRef.current;
+
+    const toPrevTrack = () => {
+
+        if ( trackIndex < 0 ) {
+            return
+        }else {
+            setTrackIndex(trackIndex - 1)
         }
-    
-        seekSlider.addEventListener('input', e => {
-            const target = e.target! as HTMLInputElement
-            showRangeProgress(target);
-        })
-       
-    
-    
-        
-    
-        const calculateTime = (secs: number) => {
-            const minutes = Math.floor(secs / 60);
-            const seconds = Math.floor(secs % 60);
-            const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
-            return `${minutes}:${returnedSeconds}`;
-        }
-    
-        const displayDuration = () => {
-            durationContainer.textContent = calculateTime(currentAudio!.duration);
-        }
-        
-        
-    
-        const setSliderMax = () => {
-            seekSlider.max = Math.floor(currentAudio!.duration).toString();
-        }
-    
-        
-    
-        const whilePlaying = () => {
-            seekSlider.value = Math.floor(currentAudio!.currentTime).toString();
-            currentTimeContainer.textContent = calculateTime(+seekSlider.value);
-            audioPlayerContainer.style.setProperty('--seek-before-width', `${+seekSlider.value / +seekSlider.max * 100}%`);
-            raf = requestAnimationFrame(whilePlaying);
-        }
-    
-        
-    
-    
-    
-        seekSlider.addEventListener('input', () => {
-            currentTimeContainer.textContent = calculateTime(+seekSlider.value);
-            if(!currentAudio.paused) {
-                cancelAnimationFrame(raf);
-            }
-        });
-    
-        seekSlider.addEventListener('change', () => {
-            currentAudio.currentTime = +seekSlider.value;
-            if(!currentAudio.paused) {
-                requestAnimationFrame(whilePlaying);
-            }
-        });      
+
     }
 
-    render() {
-        return (
-            <div id="audio-player-container">
-                <audio src="" preload="metadata" id="audioPlayer"></audio>
-                <audio src="" preload="metadata" id="audioPlayer1"></audio>
-                <div className="audio-icons-container">                 
-                    <AudioIcons />                 
-                </div>
-                <div>
-                    <span id="current-time" className="time">0:00</span>
-                    <input type="range" id="seek-slider" max="100" defaultValue="0" />
-                    <span id="duration" className="time">0:00</span>                    
-                </div>
-            </div>
-        )
+    const toNextTrack = () => {
+
+        if ( trackIndex < tracks.length - 1 ) {
+            setTrackIndex(trackIndex + 1)
+        }else {
+            return
+        }
+
     }
+
+    useEffect(() => {
+
+        if ( isPlaying ) {          
+            audioRef.current.play().catch(err => {
+                console.log(err)
+
+            })
+            const start = () => {
+                startTimer();
+            }
+            start();
+        }else {
+            audioRef.current.pause();
+        }
+        //eslint-disable-next-line
+    }, [isPlaying])
+
+    useEffect(() => {
+
+        return () => {
+            audioRef.current.pause();
+            clearInterval(intervalRef.current);
+        }
+
+    }, []);
+
+    useEffect(() => {
+
+        audioRef.current.pause();
+
+        audioRef.current = new Audio(audioSrc);
+        audioRef1.current = new Audio(audioSrc1);
+        setTrackProgress(audioRef.current.currentTime)
+        if ( isReady.current === 3 ) {
+            audioRef.current.play();
+            setIsPlaying(true);       
+            const start = () => {
+                startTimer();
+            }
+            start();
+        }else {
+            isReady.current = isReady.current + 1;
+        }
+        //eslint-disable-next-line
+    }, [trackIndex])
+
+    const startTimer = () => {
+
+        clearInterval(intervalRef.current);
+
+        intervalRef.current = setInterval(() => {
+            if ( audioRef.current.ended ) {
+                toNextTrack();
+            }else {
+                setTrackProgress(audioRef.current.currentTime)
+            }
+        }, 1000)
+
+    }
+
+    const onDrag = (value: string) => {
+
+        clearInterval(intervalRef.current);
+        audioRef.current.currentTime = +value;
+        setTrackProgress(audioRef.current.currentTime)
+
+    } 
+
+    const onDragEnd = () => {
+
+        if ( !isPlaying ) {
+            setIsPlaying(true)
+        }
+        startTimer();
+
+    }
+
+    const scrollTo = (value: number) => {
+        window.scroll({
+            top: value,
+            left: 0,
+            behavior: 'smooth'
+        })
+    }
+
+
+    useEffect(() => {
+
+        const ayeContainer = document.querySelectorAll<HTMLDivElement>('.aye-text');
+        if ( soreNumber > 1 ) {
+            ayeContainer.forEach(item => {
+                item.style.color = 'rgba(34, 34, 34, 0.733)'
+            })
+            if( isReady.current === 3) {
+                const ayatMainContainer = document.querySelector('.aye-container')! as HTMLDivElement;
+                let index = trackIndex + 2 ;
+                if ( isComingFromSearch && startingAye ) { index = index - startingAye + 1}   
+                const currentChild = ayatMainContainer.children[index] as HTMLDivElement;
+                currentChild.style.color = 'rgba(0, 126, 109, 0.76)';
+                const scrollAmount = currentChild.offsetTop - 100;
+                scrollTo(scrollAmount);             
+            }
+        }
+        else {
+            ayeContainer.forEach(item => {
+                item.style.color = 'rgba(34, 34, 34, 0.733)'
+            })
+            if( isReady.current === 3 ) {
+                const ayatMainContainer = document.querySelector('.aye-container')! as HTMLDivElement;
+                let index = trackIndex + 1;
+                if ( isComingFromSearch && startingAye ) { index = index - startingAye + 1}
+                const currentChild = ayatMainContainer.children[index]! as HTMLDivElement;
+                currentChild.style.color = 'rgba(0, 126, 109, 0.76)';
+                const scrollAmount = currentChild.offsetTop - 100;
+                scrollTo(scrollAmount);
+            }
+            
+        }
+        
+        //eslint-disable-next-line
+    }, [trackIndex])
+
+    const closePanel = () => {
+        audioRef.current.pause();
+        const ayeContainer = document.querySelectorAll<HTMLDivElement>('.aye-text');
+        ayeContainer.forEach(item => {
+            item.style.color = 'rgba(34, 34, 34, 0.733)'
+        })
+        mainContainer.current!.style.display = 'none';
+    }
+
+    return (
+        <div className="audio-player-container" ref={mainContainer} >
+            <div className="audio-control-buttons">
+                <FontAwesomeIcon onClick={closePanel} className="audio-close-icon" icon={faTimesCircle} />
+                <AudioControls
+                    isPlaying={isPlaying}
+                    onPrevClick={toPrevTrack}
+                    onNextClick={toNextTrack}
+                    onPlayPauseClick={setIsPlaying}
+                />
+            </div>
+            <div className="audio-input">
+                <input
+                    type="range"
+                    value={trackProgress}
+                    step="1"
+                    min="0"
+                    max={duration ? duration : `${duration}`}
+                    className="progress"
+                    onChange={(e) => onDrag(e.target.value)}
+                    onMouseUp={onDragEnd}
+                    onKeyUp={onDragEnd}
+                />
+            </div>
+        </div>
+    )
 }
 
+export default AudioPlayer;

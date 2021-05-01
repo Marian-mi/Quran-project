@@ -14,7 +14,7 @@ input[type="range"]::-webkit-slider-runnable-track {
     width: 100%;
     height: 3px;
     cursor: pointer;
-    background: linear-gradient(to right, rgba(0, 125, 181, 0.6) var(--buffered-width), rgba(0, 125, 181, 0.2) var(--buffered-width));
+    background-color: rgba(116, 116, 116, 0.884);
 }
 input[type="range"]::before {
     position: absolute;
@@ -30,7 +30,7 @@ input[type="range"]::-webkit-slider-thumb {
     position: relative;
     -webkit-appearance: none;
     box-sizing: content-box;
-    border: 1px solid #007db5;
+    border: 1px solid rgba(116, 116, 116, 0.884);
     height: 15px;
     width: 15px;
     border-radius: 50%;
