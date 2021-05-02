@@ -9,64 +9,60 @@ type props = {
     totalAyats: number;
     soreNumber: number;
     isComingFromSearch: boolean;
+    selectedQari: string;
     startingAye?: number;
 }
 
-const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye}: props) => {
+const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye, selectedQari}: props) => {
 
     let qari = 'Alafasy'
     let audioType = 'mp3'
     if (localStorage.getItem('qariName')) {
-        let value = localStorage.getItem('qariName')!;
+        let value = selectedQari;
         audioType = value.slice(value.length-3, value.length);
         qari = value.slice(0, value.length-3);
     }
+    const ayeSrcBuilder = (isPreload?: boolean) => {
 
-    let ayeDefault = 1;
-    if ( soreNumber === 1 ) ayeDefault = 0;
+        const aye = isPreload ? (ayeIndex+1).toString().padStart(3, '0') : (ayeIndex).toString().padStart(3, '0');
+        const soore = soreNumber.toString().padStart(3, '0');
+
+        return `https://audio.qurancdn.com/${qari}/${audioType}/${soore}${aye}.${audioType}`
+    }
+
+    let defaultAye = soreNumber === 1 ? 1 : 0;
 
     const mainContainer = useRef<HTMLDivElement>(null);
     const [isPlaying, setIsPlaying] = useState(false);
-    const [trackIndex, setTrackIndex] = useState<number>(ayeDefault);
-    const [trackProgress, setTrackProgress] = useState(0);
+    const [ayeIndex, setAyeIndex] = useState<number>(defaultAye);
+    const [ayeProgress, setAyeProgress] = useState(0);
     
-    const [tracks, setTracks] = useState<string[]>(
-        []
-    );
     const isReady = useRef<number>(1);
 
-    const audioSrc = tracks[trackIndex];
-    const audioSrc1 = tracks[trackIndex+1];
+    const audioSrc = ayeSrcBuilder();
+    let audioSrcPreload = '';
+
+    if ( ayeIndex < totalAyats - 1 ) audioSrcPreload = ayeSrcBuilder(true);
 
     const audioRef = useRef(new Audio(audioSrc));
-    const audioRef1 = useRef(new Audio(audioSrc1));
+    const audioRef1 = useRef(new Audio(audioSrcPreload));
+    const isMounted = useRef(false);
     const intervalRef = useRef(setInterval(()=>{},1000));
     
 
 
     useEffect(() => {
-        const track = [];
-        
-        for (let i = 1; i <= totalAyats; i++) {
-            let soore = soreNumber.toString().padStart(3, '0');
-            let aye = i.toString().padStart(3, '0');
-            let src =
-            `https://audio.qurancdn.com/${qari}/${audioType}/${soore}${aye}.${audioType}`;
-            track.push(src);
-        }
 
-        setTracks(track);
-
-        
-        if ( isReady.current === 3 ) {
-            audioRef.current.pause();
-            audioRef.current = new Audio(track[trackIndex]);
-            audioRef.current.play();
-        }
-    
+        audioRef.current.pause();
+        setIsPlaying(false);
+        let src = ayeSrcBuilder();
+        audioRef.current = new Audio(src);
 
         //eslint-disable-next-line
-    }, [qari, totalAyats, soreNumber, audioType])
+    }, [selectedQari])
+
+   
+    
 
     useEffect(() => {
         const playButtons = document.querySelectorAll<HTMLDivElement>('.playButton')!;
@@ -75,7 +71,7 @@ const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye}:
             const target = e.target! as HTMLDivElement;
             const value = target.getAttribute('ayeno')!;
 
-            setTrackIndex(+value-1);
+            setAyeIndex(+value);
             displayAudioControls();
         }
         playButtons.forEach(item => {
@@ -89,6 +85,8 @@ const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye}:
         }
     })
 
+    const scrollButton = useRef<HTMLDivElement>(document.querySelector('.scrollTop'))
+
     const displayAudioControls = () => {
 
         if ( mainContainer.current !== null ) {
@@ -97,26 +95,34 @@ const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye}:
                 mainContainer.current!.style.opacity = '1';
             }, 100);
         }
-
+        if ( scrollButton.current !== null ) scrollButton.current.style.bottom = '120px';
     }
     
 
     const { duration } = audioRef.current;
 
-    const toPrevTrack = () => {
+    const toPrevAye = () => {
 
-        if ( trackIndex < 0 ) {
-            return
+        if( soreNumber > 1 ) {
+            if ( ayeIndex < 1 ) {
+                return
+            }else {
+                setAyeIndex(ayeIndex - 1)
+            }
         }else {
-            setTrackIndex(trackIndex - 1)
+            if ( ayeIndex < 2 ) {
+                return
+            }else {
+                setAyeIndex(ayeIndex - 1)
+            }
         }
 
     }
 
-    const toNextTrack = () => {
+    const toNextAye = () => {
 
-        if ( trackIndex < tracks.length - 1 ) {
-            setTrackIndex(trackIndex + 1)
+        if ( ayeIndex < totalAyats - 1 ) {
+            setAyeIndex(ayeIndex + 1)
         }else {
             return
         }
@@ -130,14 +136,13 @@ const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye}:
                 console.log(err)
 
             })
-            const start = () => {
-                startTimer();
-            }
-            start();
+            
+            startTimer();
+            
         }else {
             audioRef.current.pause();
         }
-        //eslint-disable-next-line
+    //eslint-disable-next-line
     }, [isPlaying])
 
     useEffect(() => {
@@ -154,9 +159,9 @@ const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye}:
         audioRef.current.pause();
 
         audioRef.current = new Audio(audioSrc);
-        audioRef1.current = new Audio(audioSrc1);
-        setTrackProgress(audioRef.current.currentTime)
-        if ( isReady.current === 3 ) {
+        audioRef1.current = new Audio(audioSrcPreload);
+        setAyeProgress(audioRef.current.currentTime)
+        if ( isReady.current === 2 ) {
             audioRef.current.play();
             setIsPlaying(true);       
             const start = () => {
@@ -167,7 +172,7 @@ const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye}:
             isReady.current = isReady.current + 1;
         }
         //eslint-disable-next-line
-    }, [trackIndex])
+    }, [ayeIndex])
 
     const startTimer = () => {
 
@@ -175,9 +180,9 @@ const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye}:
 
         intervalRef.current = setInterval(() => {
             if ( audioRef.current.ended ) {
-                toNextTrack();
+                toNextAye();
             }else {
-                setTrackProgress(audioRef.current.currentTime)
+                setAyeProgress(audioRef.current.currentTime)
             }
         }, 1000)
 
@@ -187,7 +192,7 @@ const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye}:
 
         clearInterval(intervalRef.current);
         audioRef.current.currentTime = +value;
-        setTrackProgress(audioRef.current.currentTime)
+        setAyeProgress(audioRef.current.currentTime)
 
     } 
 
@@ -212,38 +217,47 @@ const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye}:
     useEffect(() => {
 
         const ayeContainer = document.querySelectorAll<HTMLDivElement>('.aye-text');
-        if ( soreNumber > 1 ) {
-            ayeContainer.forEach(item => {
-                item.style.color = 'rgba(34, 34, 34, 0.733)'
-            })
-            if( isReady.current === 3) {
-                const ayatMainContainer = document.querySelector('.aye-container')! as HTMLDivElement;
-                let index = trackIndex + 2 ;
-                if ( isComingFromSearch && startingAye ) { index = index - startingAye + 1}   
-                const currentChild = ayatMainContainer.children[index] as HTMLDivElement;
-                currentChild.style.color = 'rgba(0, 126, 109, 0.76)';
-                const scrollAmount = currentChild.offsetTop - 100;
-                scrollTo(scrollAmount);             
+        const highlightDiv = () => {
+            if ( soreNumber > 1 ) {
+                ayeContainer.forEach(item => {
+                    item.style.color = 'rgba(34, 34, 34, 0.733)'
+                })
+                if( 1 ) {
+                    const ayatMainContainer = document.querySelector('.aye-container')! as HTMLDivElement;
+                    let index = ayeIndex + 1 ;
+                    if ( isComingFromSearch && startingAye ) { index = index - startingAye + 1}
+                    const currentChild = ayatMainContainer.children[index] as HTMLDivElement;
+                    console.log(currentChild)   
+                    currentChild.style.color = 'rgba(0, 126, 109, 0.76)';
+                    const scrollAmount = currentChild.offsetTop - 100;
+                    scrollTo(scrollAmount);             
+                }
+            }
+            else {
+                ayeContainer.forEach(item => {
+                    item.style.color = 'rgba(34, 34, 34, 0.733)'
+                })
+                if( 1 ) {
+                    const ayatMainContainer = document.querySelector('.aye-container')! as HTMLDivElement;
+                    let index = ayeIndex;
+                    if ( isComingFromSearch && startingAye ) { index = index - startingAye + 1}
+                    const currentChild = ayatMainContainer.children[index]! as HTMLDivElement;
+                    currentChild.style.color = 'rgba(0, 126, 109, 0.76)';
+                    const scrollAmount = currentChild.offsetTop - 100;
+                    scrollTo(scrollAmount);
+                }
+                
             }
         }
-        else {
-            ayeContainer.forEach(item => {
-                item.style.color = 'rgba(34, 34, 34, 0.733)'
-            })
-            if( isReady.current === 3 ) {
-                const ayatMainContainer = document.querySelector('.aye-container')! as HTMLDivElement;
-                let index = trackIndex + 1;
-                if ( isComingFromSearch && startingAye ) { index = index - startingAye + 1}
-                const currentChild = ayatMainContainer.children[index]! as HTMLDivElement;
-                currentChild.style.color = 'rgba(0, 126, 109, 0.76)';
-                const scrollAmount = currentChild.offsetTop - 100;
-                scrollTo(scrollAmount);
-            }
-            
+
+        if ( isMounted.current ) {
+            highlightDiv();
+        }else {
+            isMounted.current = true;
         }
         
         //eslint-disable-next-line
-    }, [trackIndex])
+    }, [ayeIndex])
 
     const closePanel = () => {
         audioRef.current.pause();
@@ -252,6 +266,7 @@ const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye}:
             item.style.color = 'rgba(34, 34, 34, 0.733)'
         })
         mainContainer.current!.style.display = 'none';
+        if ( scrollButton.current !== null && window.outerWidth < 800 ) scrollButton.current.style.bottom = '20px';
     }
 
     return (
@@ -260,15 +275,15 @@ const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye}:
                 <FontAwesomeIcon onClick={closePanel} className="audio-close-icon" icon={faTimesCircle} />
                 <AudioControls
                     isPlaying={isPlaying}
-                    onPrevClick={toPrevTrack}
-                    onNextClick={toNextTrack}
+                    onPrevClick={toPrevAye}
+                    onNextClick={toNextAye}
                     onPlayPauseClick={setIsPlaying}
                 />
             </div>
             <div className="audio-input">
                 <input
                     type="range"
-                    value={trackProgress}
+                    value={ayeProgress}
                     step="1"
                     min="0"
                     max={duration ? duration : `${duration}`}

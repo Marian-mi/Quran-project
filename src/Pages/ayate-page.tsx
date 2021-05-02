@@ -44,6 +44,7 @@ type state = {
     tarjoemSize: string;
     selectedTarjome: string[];
     currentAye: number;
+    qari: string;
 }
 
 
@@ -58,6 +59,7 @@ export default class ayatePage extends React.Component<props, state> {
             tarjoemSize: '26px',
             selectedTarjome: tarjomeAnsarian,
             currentAye: 0,
+            qari: localStorage.getItem('qariName') ? localStorage.getItem('qariName')! : 'Alafasymp3'
         }
     }
     copyNotif = React.createRef<HTMLDivElement>();
@@ -81,11 +83,11 @@ export default class ayatePage extends React.Component<props, state> {
         })
     }
 
-    
-
-
-    
-
+    qariChangeHandler = (selected: string) => {
+        this.setState({
+            qari: selected
+        })
+    }
 
     buttonsData = [
         {textData: "Play", icon:<FontAwesomeIcon  className="playButton" icon={faPlayCircle} />, id: 1},
@@ -325,7 +327,7 @@ export default class ayatePage extends React.Component<props, state> {
         return (
             <div className="aye-main">
                 <Suspense fallback={<div>Loading...</div>}>
-                    <Setting ayePageRerender={this.reRender} tarjomeSelection={this.tarjomeSelection}/>
+                    <Setting qariChange={this.qariChangeHandler} ayePageRerender={this.reRender} tarjomeSelection={this.tarjomeSelection}/>
                 </Suspense>
                 <div className="aye-container">
                 <div className="aye-page-header">
@@ -352,7 +354,8 @@ export default class ayatePage extends React.Component<props, state> {
                 <div className="scrollTop"><FontAwesomeIcon icon={faArrowCircleUp} onClick={this.scrollToTop} /></div>
                 <div className="aye-page-footer">...</div>              
                     <ErrorBoundary>
-                        <AudioPlayer 
+                        <AudioPlayer
+                        selectedQari = {this.state.qari} 
                         isComingFromSearch= {this.props.location.state.isComingFromSearch} 
                         soreNumber={this.sorreno} totalAyats={totalAyats}
                         startingAye={this.props.location.state.scrolltoAye}

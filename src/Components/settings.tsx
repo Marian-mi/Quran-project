@@ -8,6 +8,7 @@ import QariList from './qari-list';
 type props = {
     tarjomeSelection(index: number): void;
     ayePageRerender(): void;
+    qariChange(selected: string): void;
 }
 
 export default class Setting extends React.Component<props>{
@@ -21,6 +22,7 @@ export default class Setting extends React.Component<props>{
                 icon.style.opacity = '1';
                 let value = target.getAttribute('customvalue')!;
                 localStorage.setItem('qariName', value);
+                this.props.qariChange(value);
                 qariOptions.forEach((item: HTMLDivElement) => {
                     if ( item.children[0] !== icon ) {
                         let remove = item.children[0] as HTMLDivElement;
