@@ -48,6 +48,26 @@
     }
 }
 
+.audio-loading-spinner {
+    position: absolute;
+    top: 5px;
+    height: 25px;
+    right: 10px;
+    font-size: 25px !important;
+    color: rgba(255, 255, 255, 0.767) !important;
+    svg {
+        animation-name: audio-spinner;
+        animation-duration: 1s;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
+    }
+}
+
+@keyframes audio-spinner {
+    from {transform: rotate(0);}
+    to   {transform: rotate(360deg);}
+}
+
 .audio-close-icon {
     position: absolute;
     left: 10px;
