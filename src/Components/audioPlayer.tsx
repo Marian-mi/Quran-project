@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import AudioControls from './AudioButtons';
 import '../scss/audioPlayer.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
 
 type props = {
@@ -36,6 +36,7 @@ const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye, 
     const [isPlaying, setIsPlaying] = useState(false);
     const [ayeIndex, setAyeIndex] = useState<number>(defaultAye);
     const [ayeProgress, setAyeProgress] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
     
     const isReady = useRef<number>(1);
 
@@ -46,8 +47,8 @@ const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye, 
 
     const audioRef = useRef(new Audio(audioSrc));
     const audioRef1 = useRef(new Audio(audioSrcPreload));
-    const isMounted = useRef(false);
     const intervalRef = useRef(setInterval(()=>{},1000));
+    const currentDiv = useRef<HTMLElement | null>(null)
     
 
 
@@ -73,6 +74,10 @@ const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye, 
 
             setAyeIndex(+value);
             displayAudioControls();
+            const targetParent = target.parentElement!.parentElement!.parentElement!.parentElement! as HTMLDivElement;
+            currentDiv.current = targetParent;
+            highLighter(currentDiv.current!);
+
         }
         playButtons.forEach(item => {
             item.addEventListener('click', (e) => {playAudio(e)})
@@ -107,13 +112,17 @@ const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye, 
             if ( ayeIndex < 1 ) {
                 return
             }else {
-                setAyeIndex(ayeIndex - 1)
+                currentDiv.current = currentDiv.current!.previousElementSibling! as HTMLElement;
+                highLighter(currentDiv.current);
+                setAyeIndex(ayeIndex - 1);
             }
         }else {
             if ( ayeIndex < 2 ) {
                 return
             }else {
-                setAyeIndex(ayeIndex - 1)
+                currentDiv.current = currentDiv.current!.previousElementSibling! as HTMLElement;
+                highLighter(currentDiv.current);
+                setAyeIndex(ayeIndex - 1);
             }
         }
 
@@ -121,20 +130,35 @@ const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye, 
 
     const toNextAye = () => {
 
-        if ( ayeIndex < totalAyats - 1 ) {
-            setAyeIndex(ayeIndex + 1)
+        if ( soreNumber > 1 ) {
+            if ( ayeIndex < totalAyats - 1 ) {
+                currentDiv.current = currentDiv.current!.nextElementSibling! as HTMLElement;
+                highLighter(currentDiv.current);
+                setAyeIndex(ayeIndex + 1)
+            }else {
+                return
+            }
         }else {
-            return
+            if ( ayeIndex < totalAyats ) {
+                currentDiv.current = currentDiv.current!.nextElementSibling! as HTMLElement;
+                highLighter(currentDiv.current);
+                setAyeIndex(ayeIndex + 1)
+            }else {
+                return
+            }
         }
 
     }
 
     useEffect(() => {
 
-        if ( isPlaying ) {          
-            audioRef.current.play().catch(err => {
+        if ( isPlaying ) {
+            setIsLoading(true)
+            audioRef.current.play().then(() => {
+                setIsLoading(false);
+            }).catch(err => {
+                setIsLoading(false);
                 console.log(err)
-
             })
             
             startTimer();
@@ -162,7 +186,13 @@ const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye, 
         audioRef1.current = new Audio(audioSrcPreload);
         setAyeProgress(audioRef.current.currentTime)
         if ( isReady.current === 2 ) {
-            audioRef.current.play();
+            setIsLoading(true);
+            audioRef.current.play().then(() => {
+                setIsLoading(false)
+            }).catch((err) => {
+                setIsLoading(false);
+                console.log(err)
+            })
             setIsPlaying(true);       
             const start = () => {
                 startTimer();
@@ -213,51 +243,62 @@ const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye, 
         })
     }
 
-
-    useEffect(() => {
-
+    const highLighter = (currentDiv: HTMLElement) => {
         const ayeContainer = document.querySelectorAll<HTMLDivElement>('.aye-text');
-        const highlightDiv = () => {
-            if ( soreNumber > 1 ) {
-                ayeContainer.forEach(item => {
-                    item.style.color = 'rgba(34, 34, 34, 0.733)'
-                })
-                if( 1 ) {
-                    const ayatMainContainer = document.querySelector('.aye-container')! as HTMLDivElement;
-                    let index = ayeIndex + 1 ;
-                    if ( isComingFromSearch && startingAye ) { index = index - startingAye + 1}
-                    const currentChild = ayatMainContainer.children[index] as HTMLDivElement;
-                    console.log(currentChild)   
-                    currentChild.style.color = 'rgba(0, 126, 109, 0.76)';
-                    const scrollAmount = currentChild.offsetTop - 100;
-                    scrollTo(scrollAmount);             
-                }
-            }
-            else {
-                ayeContainer.forEach(item => {
-                    item.style.color = 'rgba(34, 34, 34, 0.733)'
-                })
-                if( 1 ) {
-                    const ayatMainContainer = document.querySelector('.aye-container')! as HTMLDivElement;
-                    let index = ayeIndex;
-                    if ( isComingFromSearch && startingAye ) { index = index - startingAye + 1}
-                    const currentChild = ayatMainContainer.children[index]! as HTMLDivElement;
-                    currentChild.style.color = 'rgba(0, 126, 109, 0.76)';
-                    const scrollAmount = currentChild.offsetTop - 100;
-                    scrollTo(scrollAmount);
-                }
-                
-            }
-        }
-
-        if ( isMounted.current ) {
-            highlightDiv();
-        }else {
-            isMounted.current = true;
-        }
+        ayeContainer.forEach(item => {
+            item.style.color = 'rgba(34, 34, 34, 0.733)'
+        });
         
-        //eslint-disable-next-line
-    }, [ayeIndex])
+        const scrollAmount = currentDiv.offsetTop - 100;
+        currentDiv.style.color = 'rgba(0, 126, 109, 0.76)';
+        scrollTo(scrollAmount);
+    }
+
+
+    // useEffect(() => {
+
+    //     const ayeContainer = document.querySelectorAll<HTMLDivElement>('.aye-text');
+    //     const highlightDiv = () => {
+    //         if ( soreNumber > 1 ) {
+    //             ayeContainer.forEach(item => {
+    //                 item.style.color = 'rgba(34, 34, 34, 0.733)'
+    //             })
+    //             if( 1 ) {
+    //                 const ayatMainContainer = document.querySelector('.aye-container')! as HTMLDivElement;
+    //                 let index = ayeIndex + 1 ;
+    //                 if ( isComingFromSearch && startingAye ) { index = index - startingAye + 1}
+    //                 const currentChild = ayatMainContainer.children[index] as HTMLDivElement;
+    //                 console.log(currentChild)   
+    //                 currentChild.style.color = 'rgba(0, 126, 109, 0.76)';
+    //                 const scrollAmount = currentChild.offsetTop - 100;
+    //                 scrollTo(scrollAmount);             
+    //             }
+    //         }
+    //         else {
+    //             ayeContainer.forEach(item => {
+    //                 item.style.color = 'rgba(34, 34, 34, 0.733)'
+    //             })
+    //             if( 1 ) {
+    //                 const ayatMainContainer = document.querySelector('.aye-container')! as HTMLDivElement;
+    //                 let index = ayeIndex;
+    //                 if ( isComingFromSearch && startingAye ) { index = index - startingAye + 1}
+    //                 const currentChild = ayatMainContainer.children[index]! as HTMLDivElement;
+    //                 currentChild.style.color = 'rgba(0, 126, 109, 0.76)';
+    //                 const scrollAmount = currentChild.offsetTop - 100;
+    //                 scrollTo(scrollAmount);
+    //             }
+                
+    //         }
+    //     }
+
+    //     if ( isMounted.current ) {
+    //         highlightDiv();
+    //     }else {
+    //         isMounted.current = true;
+    //     }
+        
+    //     //eslint-disable-next-line
+    // }, [ayeIndex])
 
     const closePanel = () => {
         audioRef.current.pause();
@@ -293,6 +334,7 @@ const AudioPlayer = ({totalAyats, soreNumber,  isComingFromSearch, startingAye, 
                     onKeyUp={onDragEnd}
                 />
             </div>
+            {isLoading && <div className="audio-loading-spinner"><FontAwesomeIcon icon={faSpinner} /></div>}
         </div>
     )
 }
